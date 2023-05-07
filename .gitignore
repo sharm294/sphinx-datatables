@@ -1,3 +1,9 @@
+# Copyright (c) 2023 Varun Sharma
+#
+# SPDX-License-Identifier: MIT
+
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

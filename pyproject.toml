@@ -1,0 +1,50 @@
+# Copyright (c) 2023 Varun Sharma
+#
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphinx-datatables"
+authors = [{name = "Varun Sharma", email = "29899983+sharm294@users.noreply.github.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["sphinx", "table", "datatables"]
+dynamic = ["version"]
+requires-python = ">=3.8"
+dependencies = [
+    "sphinx>4",
+    "sphinxcontrib_jquery>=4.1"
+]
+
+[project.optional-dependencies]
+docs = [
+    "myst-parser",
+    "docutils",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "sphinx_datatables.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mypkg = ["*.js"]
+
+[project.urls]
+Home = "https://github.com/sharm294/sphinx-datatables"
+Documentation = "https://sphinx-tippy.readthedocs.io"
+
+[tool.isort]
+profile = "black"
+

@@ -26,12 +26,6 @@ dependencies = [
     "sphinxcontrib_jquery>=4.1"
 ]
 
-[project.optional-dependencies]
-docs = [
-    "myst-parser",
-    "docutils",
-]
-
 [tool.setuptools.dynamic]
 version = {attr = "sphinx_datatables.__version__"}
 

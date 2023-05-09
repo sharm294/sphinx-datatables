@@ -19,7 +19,7 @@ jobs:
       - name: Installing the library
         shell: bash -l {0}
         run: |
-          python setup.py install
+          pip3 install .
       - name: Running the Sphinx to gh-pages Action
         uses: uibcdf/action-sphinx-docs-to-gh-pages@v2.0.0
         with:

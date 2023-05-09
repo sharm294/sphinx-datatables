@@ -15,6 +15,10 @@ jobs:
         pre-build-command: pip3 install .[docs]
         build-command: "sphinx-build -b html . _build"
         docs-folder: "docs/"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: DocumentationHTML
+        path: docs/_build/html/
     # Publish built docs to gh-pages branch.
     # ===============================
     - name: Commit documentation changes

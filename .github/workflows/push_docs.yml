@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: sharm294/sphinx-action@master
+    - uses: ammaraskar/sphinx-action@master
       with:
+        pre-build-command: pip3 install .[docs]
         build-command: "sphinx-build -b html . _build"
         docs-folder: "docs/"
     # Publish built docs to gh-pages branch.

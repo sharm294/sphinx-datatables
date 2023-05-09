@@ -29,9 +29,6 @@ extensions = [
     "sphinx_datatables",
 ]
 
-# strip leading $ from bash code blocks
-copybutton_prompt_text = "$ "
-
 # raise a warning if a cross-reference cannot be found
 nitpicky = True
 

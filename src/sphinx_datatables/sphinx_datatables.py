@@ -57,6 +57,7 @@ def add_datatables_scripts(
 
     app.add_js_file(datatables_js)
     app.add_css_file(datatables_css)
+    app.add_js_file("activate_datatables.js")
 
 
 def finish(app: Sphinx, exception):
@@ -64,6 +65,7 @@ def finish(app: Sphinx, exception):
     custom_file = str(
         Path(__file__).parent.joinpath("activate_datatables.js").absolute()
     )
+    print("copying?")
     copy_asset_file(custom_file, os.path.join(app.builder.outdir, "_static"))
 
 

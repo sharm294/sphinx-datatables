@@ -39,6 +39,11 @@ mypkg = ["*.js.in"]
 Home = "https://github.com/sharm294/sphinx-datatables"
 Documentation = "https://sharm294.github.io/sphinx-datatables/"
 
+[project.optional-dependencies]
+docs = [
+    "sphinx-toolbox"
+]
+
 [tool.isort]
 profile = "black"
 

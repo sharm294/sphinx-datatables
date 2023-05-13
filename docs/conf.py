@@ -27,6 +27,7 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
     "sphinx_datatables",
+    "sphinx_toolbox.collapse",
 ]
 
 # raise a warning if a cross-reference cannot be found

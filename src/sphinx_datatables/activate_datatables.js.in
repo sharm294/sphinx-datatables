@@ -3,5 +3,5 @@
 // SPDX-License-Identifier: MIT
 
 $(document).ready( function () {
-    $('table.sphinx-datatable').DataTable();
+    $('table.${datatables_class}').DataTable();
 } );

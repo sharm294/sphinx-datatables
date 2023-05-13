@@ -3,14 +3,40 @@
     
     SPDX-License-Identifier: MIT
 
-Sphinx Datatables
+Sphinx DataTables
 =================
 
-This extension makes it easy to use more expressive tables in Sphinx documentation.
+This extension makes it easy to use more expressive tables in Sphinx documentation with `DataTables <https://datatables.net/>`__.
+See the demo and full documentation `online <https://sharm294.github.io/sphinx-datatables/>`__.
 
-.. csv-table::
-    :header: First,Last
-    :class: sphinx-datatable
+Installation
+------------
 
-    John,Smith
-    Jane,Doe
+.. code-block:: console
+
+    pip install sphinx-datatables
+
+Usage
+-----
+
+Add the extension in your ``conf.py``:
+
+.. code-block:: python
+
+    extensions = [
+        "sphinxcontrib.jquery",
+        "sphinx_datatables",
+    ]
+
+In your ``.rst`` documentation, create a table and add a custom class label.
+Your table must have a valid header row.
+
+.. code-block:: rst
+    :emphasize-lines: 3
+
+    .. csv-table::
+        :header: First Name,Last Name
+        :class: sphinx-datatable
+
+        John,Smith
+        Jane,Doe

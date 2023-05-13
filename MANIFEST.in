@@ -1,1 +1,1 @@
-include src/sphinx_datatables/*.js
+include src/sphinx_datatables/*.js.in

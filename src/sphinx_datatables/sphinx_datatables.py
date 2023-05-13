@@ -8,7 +8,6 @@ from pathlib import Path
 
 from docutils import nodes
 from sphinx.application import Sphinx
-from sphinx.util.fileutil import copy_asset_file
 
 
 @dataclass
@@ -65,8 +64,13 @@ def finish(app: Sphinx, exception):
     custom_file = str(
         Path(__file__).parent.joinpath("activate_datatables.js").absolute()
     )
-    print("copying?")
-    copy_asset_file(custom_file, os.path.join(app.builder.outdir, "_static"))
+    config = get_config(app)
+    with open(custom_file + ".in", "r") as template:
+        contents = template.read()
+        contents = contents.replace(r"${datatables_class}", config.datatables_class)
+        asset_file = os.path.join(app.builder.outdir, "_static/activate_datatables.js")
+        with open(asset_file, "w+") as f:
+            f.write(contents)
 
 
 def setup(app: Sphinx):
@@ -78,7 +82,7 @@ def setup(app: Sphinx):
     """
 
     app.add_config_value("datatables_version", "1.13.4", "html", str)
-    app.add_config_value("datatables_class", "sphinx-datatables", "html", str)
+    app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
 
     app.connect("builder-inited", set_config)
     app.connect("html-page-context", add_datatables_scripts)

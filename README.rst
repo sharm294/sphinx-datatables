@@ -32,7 +32,6 @@ In your ``.rst`` documentation, create a table and add a custom class label.
 Your table must have a valid header row.
 
 .. code-block:: rst
-    :emphasize-lines: 3
 
     .. csv-table::
         :header: First Name,Last Name

@@ -10,6 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "sphinx-datatables"
 authors = [{name = "Varun Sharma", email = "29899983+sharm294@users.noreply.github.com"}]
 readme = "README.rst"
+description = "Searchable and sortable tables in Sphinx documentation"
 license = {file = "LICENSE"}
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -20,7 +21,7 @@ classifiers = [
 ]
 keywords = ["sphinx", "table", "datatables"]
 dynamic = ["version"]
-requires-python = ">=3.8"
+requires-python = ">=3.6"
 dependencies = [
     "sphinx>4",
     "sphinxcontrib_jquery>=4.1"

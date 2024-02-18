@@ -47,4 +47,3 @@ docs = [
 
 [tool.isort]
 profile = "black"
-

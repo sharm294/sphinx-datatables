@@ -133,16 +133,22 @@ Using the ``table`` role:
             Row 1, column 1     Row 2, column 2     Row 2, column 3
             =================== =================== ===================
 
-Configuration
--------------
+Custom Options
+^^^^^^^^^^^^^^
 
-The following configuration options and default values are available:
+DataTables comes with many `options <https://datatables.net/reference/option/>`__.
+By default, no options are set.
+If you want to change any of them, you can use the `datatables_options` configuration option in `conf.py`.
 
-.. code-block:: python
-    :caption: conf.py
-    
-    # set the version to use for DataTables plugin
-    datatables_version = "1.13.4"
+For example, to set the `internationalization plugin <https://datatables.net/plug-ins/i18n/>`__:
 
-    # name of the class to use for tables to enable DataTables
-    datatables_class = "sphinx-datatable"
+.. code-block:: py
+
+    # in conf.py
+    datatables_options = {
+        "language": {
+            "url": "https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json"
+        }
+    }
+
+You can use the special variable `${datatables_version}` to dynamically set the DataTables version in URLs.

@@ -39,3 +39,21 @@ Your table must have a valid header row.
 
         John,Smith
         Jane,Doe
+
+Configuration
+-------------
+
+The following configuration options are available with the following default values:
+
+.. code-block:: python
+    :caption: conf.py
+    
+    # set the version to use for DataTables plugin
+    datatables_version = "1.13.4"
+
+    # name of the class to use for tables to enable DataTables
+    datatables_class = "sphinx-datatable"
+
+    # any custom options to pass to the DataTables constructor. Note that any options
+    # you set are used for all DataTables.
+    datatables_options = {}

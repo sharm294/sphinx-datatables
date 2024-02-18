@@ -3,5 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 $(document).ready( function () {
-    $('table.${datatables_class}').DataTable();
+    $('table.${datatables_class}').DataTable(
+${datatables_options}
+    );
 } );

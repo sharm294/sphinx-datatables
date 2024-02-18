@@ -1,6 +1,6 @@
 ..
     Copyright (c) 2023 Varun Sharma
-    
+
     SPDX-License-Identifier: MIT
 
 Sphinx DataTables
@@ -46,8 +46,9 @@ Configuration
 The following configuration options are available with the following default values:
 
 .. code-block:: python
+
     :caption: conf.py
-    
+
     # set the version to use for DataTables plugin
     datatables_version = "1.13.4"
 

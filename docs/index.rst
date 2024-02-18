@@ -134,11 +134,12 @@ Using the ``table`` role:
             =================== =================== ===================
 
 Custom Options
-^^^^^^^^^^^^^^
+--------------
 
 DataTables comes with many `options <https://datatables.net/reference/option/>`__.
 By default, no options are set.
 If you want to change any of them, you can use the `datatables_options` configuration option in `conf.py`.
+Note that all DataTables will share the same options you set here.
 
 For example, to set the `internationalization plugin <https://datatables.net/plug-ins/i18n/>`__:
 

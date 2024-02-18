@@ -28,6 +28,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_datatables",
     "sphinx_toolbox.collapse",
+    "sphinx_copybutton",
 ]
 
 # raise a warning if a cross-reference cannot be found

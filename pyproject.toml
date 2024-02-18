@@ -21,7 +21,7 @@ classifiers = [
 ]
 keywords = ["sphinx", "table", "datatables"]
 dynamic = ["version"]
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 dependencies = [
     "sphinx>4",
     "sphinxcontrib_jquery>=4.1"
@@ -42,9 +42,10 @@ Documentation = "https://sharm294.github.io/sphinx-datatables/"
 
 [project.optional-dependencies]
 docs = [
-    "sphinx-toolbox"
+    "sphinx-toolbox",
+    "sphinx-copybutton",
+    "sphinxcontrib-jquery",
 ]
 
 [tool.isort]
 profile = "black"
-

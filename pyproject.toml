@@ -21,7 +21,7 @@ classifiers = [
 ]
 keywords = ["sphinx", "table", "datatables"]
 dynamic = ["version"]
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 dependencies = [
     "sphinx>4",
     "sphinxcontrib_jquery>=4.1"

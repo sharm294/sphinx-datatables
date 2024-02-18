@@ -42,7 +42,9 @@ Documentation = "https://sharm294.github.io/sphinx-datatables/"
 
 [project.optional-dependencies]
 docs = [
-    "sphinx-toolbox"
+    "sphinx-toolbox",
+    "sphinx-copybutton",
+    "sphinxcontrib-jquery",
 ]
 
 [tool.isort]

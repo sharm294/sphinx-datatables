@@ -47,7 +47,7 @@ The following configuration options are available with the following default val
 
 .. code-block:: python
 
-    :caption: conf.py
+    # in conf.py
 
     # set the version to use for DataTables plugin
     datatables_version = "1.13.4"
@@ -55,6 +55,6 @@ The following configuration options are available with the following default val
     # name of the class to use for tables to enable DataTables
     datatables_class = "sphinx-datatable"
 
-    # any custom options to pass to the DataTables constructor. Note that any options
-    # you set are used for all DataTables.
+    # any custom options to pass to the DataTables constructor. Note that any
+    # options you set are used for all DataTables.
     datatables_options = {}

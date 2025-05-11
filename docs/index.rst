@@ -162,7 +162,7 @@ For example, to set the `internationalization plugin <https://datatables.net/plu
 You can use the special variable `${datatables_version}` to dynamically set the DataTables version in URLs (which is substituted by `datatables_version` configuration value from `conf.py`).
 
 .. note:: `datatables_options` to JavaScript object conversion.
-    The dictionary is converted to JSON with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`__ and passed to the JavaScript DataTables constructor.
+    If a dictionary, then it is converted to JSON with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`__ and passed to the JavaScript DataTables constructor.
     If it's a string, it will be passed as is, so it will need to be a valid JavaScript string.
 
     You can set any options you want, but make sure to follow the DataTables documentation for the correct format.
@@ -178,8 +178,7 @@ You can use the special variable `${datatables_version}` to dynamically set the 
             "lengthMenu": [10, 25, 50, -1],
         }
         # as plain JavaScript in a string
-        datatables_options = """\
-            {
+        datatables_options = """{
             pageLength: -1,
             language: {
                 lengthLabels: {
@@ -187,7 +186,4 @@ You can use the special variable `${datatables_version}` to dynamically set the 
                 }
             },
             lengthMenu: [10, 25, 50, -1]
-            }
-        """
-
-    Quoting and indentation are optional.
+            }"""

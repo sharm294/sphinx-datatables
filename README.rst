@@ -49,7 +49,7 @@ The following configuration options are available with the following default val
     # in conf.py
 
     # set the version to use for DataTables plugin
-    datatables_version = "1.13.4"
+    datatables_version = "2.3.0"
 
     # name of the class to use for tables to enable DataTables
     datatables_class = "sphinx-datatable"

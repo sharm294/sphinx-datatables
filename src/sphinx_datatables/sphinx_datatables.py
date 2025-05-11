@@ -11,6 +11,7 @@ from typing import Union
 from docutils import nodes
 import packaging.version
 from sphinx.application import Sphinx
+import sphinx
 
 INDENT = " " * 4
 
@@ -58,13 +59,25 @@ def add_datatables_scripts(
 
     config = get_config(app)
 
+    # Check if jQuery is already included
+    # If not, include it in CSS and JS files from the CDN
+    try:
+        app.setup_extension("sphinxcontrib.jquery")
+    except sphinx.errors.ExtensionError:
+        datatables_include_jquery = True
+    else:
+        datatables_include_jquery = False
+
     datetables_version_str = config.datatables_version
     if packaging.version.parse(datetables_version_str) < packaging.version.parse("2.0.0"):
         datatables_js = f"https://cdn.datatables.net/{datetables_version_str}/js/jquery.dataTables.min.js"
         datatables_css = f"https://cdn.datatables.net/{datetables_version_str}/css/jquery.dataTables.min.css"
-    else:
+    elif datatables_include_jquery:  # retrieve DataTables with jQuery included
         datatables_js = f"https://cdn.datatables.net/v/dt/dt-{datetables_version_str}/datatables.min.js"
         datatables_css = f"https://cdn.datatables.net/v/dt/dt-{datetables_version_str}/datatables.min.css"
+    else:  # retrieve DataTables only
+        datatables_js = f"https://cdn.datatables.net/{datetables_version_str}/js/dataTables.min.js"
+        datatables_css = f"https://cdn.datatables.net/{datetables_version_str}/css/dataTables.dataTables.min.css"
 
     app.add_js_file(datatables_js)
     app.add_css_file(datatables_css)

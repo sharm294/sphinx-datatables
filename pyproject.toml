@@ -44,6 +44,9 @@ docs = [
     "sphinx-toolbox",
     "sphinx-copybutton",
 ]
+dev = [
+    "pytest",
+]
 
 [tool.isort]
 profile = "black"

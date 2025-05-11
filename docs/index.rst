@@ -143,7 +143,7 @@ Note that all DataTables will share the same options you set here.
 
 For example, to set the `internationalization plugin <https://datatables.net/plug-ins/i18n/>`__:
 
-.. code-block:: py
+.. code-block:: python
 
     # in conf.py
     datatables_options = {
@@ -151,5 +151,43 @@ For example, to set the `internationalization plugin <https://datatables.net/plu
             "url": "https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json"
         }
     }
+    # this is equivalent to JavaScript:
+    datatables_options = """\
+    {
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json,'
+        },
+    }"""
 
-You can use the special variable `${datatables_version}` to dynamically set the DataTables version in URLs.
+You can use the special variable `${datatables_version}` to dynamically set the DataTables version in URLs (which is substituted by `datatables_version` configuration value from `conf.py`).
+
+.. note:: `datatables_options` to JavaScript object conversion.
+    The dictionary is converted to JSON with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`__ and passed to the JavaScript DataTables constructor.
+    If it's a string, it will be passed as is, so it will need to be a valid JavaScript string.
+
+    You can set any options you want, but make sure to follow the DataTables documentation for the correct format.
+    For example, if you want to set the `pageLength` option to `-1` (i.e., show all content), plus rename that option to `Show all`, you would do it like this:
+
+    .. code-block:: python
+
+        # in conf.py
+        # as a dictionary
+        datatables_options = {
+            "pageLength": -1,
+            "language": {"lengthLabels": {"-1": "Show all"}},
+            "lengthMenu": [10, 25, 50, -1],
+        }
+        # as plain JavaScript in a string
+        datatables_options = """\
+            {
+            pageLength: -1,
+            language: {
+                lengthLabels: {
+                    '-1': 'Show all'
+                }
+            },
+            lengthMenu: [10, 25, 50, -1]
+            }
+        """
+
+    Quoting and indentation are optional.

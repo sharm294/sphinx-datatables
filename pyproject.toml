@@ -24,6 +24,7 @@ dynamic = ["version"]
 requires-python = ">=3.7"
 dependencies = [
     "sphinx>4",
+    "packaging",
 ]
 
 [tool.setuptools.dynamic]

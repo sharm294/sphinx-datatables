@@ -24,7 +24,6 @@ dynamic = ["version"]
 requires-python = ">=3.7"
 dependencies = [
     "sphinx>4",
-    "sphinxcontrib_jquery>=4.1"
 ]
 
 [tool.setuptools.dynamic]
@@ -44,7 +43,6 @@ Documentation = "https://sharm294.github.io/sphinx-datatables/"
 docs = [
     "sphinx-toolbox",
     "sphinx-copybutton",
-    "sphinxcontrib-jquery",
 ]
 
 [tool.isort]

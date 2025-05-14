@@ -2,17 +2,17 @@
 #
 # SPDX-License-Identifier: MIT
 
+import json
 import os
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
-import json
 from typing import Union
 
-from docutils import nodes
 import packaging.version
-from sphinx.application import Sphinx
 import sphinx
+from docutils import nodes
+from sphinx.application import Sphinx
 
 INDENT = " " * 4
 

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 import os
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 import json
@@ -93,7 +94,7 @@ def datatables_options_to_js(options: Union[dict, str], indent: str):
     if isinstance(options, dict):
         obj = json.dumps(options, indent=INDENT)
     else:  # If it's not a dict, just return whatever it is (e.g., a string)
-        obj = options
+        obj = textwrap.dedent(options)
     # prepend an indent to each line
     obj = "\n".join([indent + line for line in obj.splitlines()])
     if not obj.endswith(","):

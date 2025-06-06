@@ -22,6 +22,7 @@ else:
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinxcontrib.jquery",
     # adds .nojekyll to the generated HTML for GitHub
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",

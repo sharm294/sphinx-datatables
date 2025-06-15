@@ -2,12 +2,17 @@
 #
 # SPDX-License-Identifier: MIT
 
+import json
 import os
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Union
 
+import packaging.version
 from docutils import nodes
 from sphinx.application import Sphinx
+from sphinx.errors import ExtensionError
 
 INDENT = " " * 4
 
@@ -20,7 +25,7 @@ class Config:
 
     datatables_version: str
     datatables_class: str
-    datatables_options: dict
+    datatables_options: Union[dict, str]
 
 
 def set_config(app: Sphinx):
@@ -55,49 +60,75 @@ def add_datatables_scripts(
 
     config = get_config(app)
 
-    datatables_js = f"https://cdn.datatables.net/{config.datatables_version}/js/jquery.dataTables.min.js"
-    datatables_css = f"https://cdn.datatables.net/{config.datatables_version}/css/jquery.dataTables.min.css"
+    # Set up jQuery first, to verify it is available and gracefully output an error
+    try:
+        app.setup_extension("sphinxcontrib.jquery")
+    except ExtensionError:
+        raise ExtensionError(
+            "sphinxcontrib.jquery is required for sphinx-datatables to work. "
+            "Please add it to your extensions in conf.py."
+        )
+
+    datetables_version_str = config.datatables_version
+    if packaging.version.parse(datetables_version_str) < packaging.version.parse("2.0.0"):
+        datatables_js = f"https://cdn.datatables.net/{datetables_version_str}/js/jquery.dataTables.min.js"
+        datatables_css = f"https://cdn.datatables.net/{datetables_version_str}/css/jquery.dataTables.min.css"
+    else:  # this is for DataTables 2.0.0 and above, only the minified version is available (jQuery is not included)
+        datatables_js = f"https://cdn.datatables.net/v/dt/dt-{datetables_version_str}/datatables.min.js"
+        datatables_css = f"https://cdn.datatables.net/v/dt/dt-{datetables_version_str}/datatables.min.css"
 
     app.add_js_file(datatables_js)
     app.add_css_file(datatables_css)
     app.add_js_file("activate_datatables.js")
 
 
-def dict_to_js(options: dict, version: str, indent: str):
+def datatables_options_to_js(options: Union[dict, str], indent: str):
     """
     Convert a Python nested dictionary to a valid JS dictionary object as a string
+    or the string itself if it's not a dict, but indented.
+    Appends a comma at the end if not already present.
     """
-
-    obj = indent + "{\n"
-    for key, value in options.items():
-        if isinstance(value, dict):
-            value_str = dict_to_js(value, version, indent + INDENT)
-        elif isinstance(value, str):
-            value_str = f"'{value},'"
-            value_str = value_str.replace(r"${datatables_version}", version)
-        else:
-            value_str = f"{value},"
-        obj += f"{indent + INDENT}{key}: {value_str}\n"
-    obj += indent + "},\n"
+    if isinstance(options, dict):
+        obj = json.dumps(options, indent=INDENT)
+    else:  # If it's not a dict, just return whatever it is (e.g., a string)
+        obj = textwrap.dedent(options)
+    # prepend an indent to each line
+    obj = "\n".join([indent + line for line in obj.splitlines()])
+    if not obj.endswith(","):
+        obj += ","
     return obj
 
 
-def finish(app: Sphinx, exception):
-
+def create_datatables_js(
+    datatables_class: str, datatables_options: Union[dict, str], datatables_version: str
+) -> str:
+    """
+    Create the JS file to activate datatables
+    """
     custom_file = str(
         Path(__file__).parent.joinpath("activate_datatables.js").absolute()
     )
-    config = get_config(app)
     with open(custom_file + ".in", "r") as template:
         contents = template.read()
-        contents = contents.replace(r"${datatables_class}", config.datatables_class)
-        datatables_options = dict_to_js(
-            config.datatables_options, config.datatables_version, INDENT * 2
+        contents = contents.replace(r"${datatables_class}", datatables_class)
+        datatables_options = datatables_options_to_js(datatables_options, INDENT * 2)
+        datatables_options = datatables_options.replace(
+            r"${datatables_version}", datatables_version
         )
         contents = contents.replace(r"${datatables_options}", datatables_options)
-        asset_file = os.path.join(app.builder.outdir, "_static/activate_datatables.js")
-        with open(asset_file, "w+") as f:
-            f.write(contents)
+    return contents
+
+
+def finish(app: Sphinx, exception):
+    config = get_config(app)
+    datatables_config_contents = create_datatables_js(
+        config.datatables_class,
+        config.datatables_options,
+        config.datatables_version,
+    )
+    asset_file = os.path.join(app.builder.outdir, "_static/activate_datatables.js")
+    with open(asset_file, "w+") as f:
+        f.write(datatables_config_contents)
 
 
 def setup(app: Sphinx):
@@ -108,9 +139,9 @@ def setup(app: Sphinx):
         app (Sphinx): Sphinx app
     """
 
-    app.add_config_value("datatables_version", "1.13.4", "html", str)
+    app.add_config_value("datatables_version", "2.3.0", "html", str)
     app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
-    app.add_config_value("datatables_options", {}, "html", dict)
+    app.add_config_value("datatables_options", {}, "html", [dict, str])
 
     app.connect("builder-inited", set_config)
     app.connect("html-page-context", add_datatables_scripts)

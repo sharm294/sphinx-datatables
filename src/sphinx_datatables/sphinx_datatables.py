@@ -19,7 +19,6 @@ class Config:
     """
     Holds the configuration data for the extension
     """
-
     datatables_version: str
     datatables_class: str
     datatables_options: dict

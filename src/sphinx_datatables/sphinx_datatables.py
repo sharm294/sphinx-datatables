@@ -5,6 +5,8 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+import importlib.metadata
 
 from docutils import nodes
 from sphinx.application import Sphinx
@@ -23,23 +25,12 @@ class Config:
     datatables_options: dict
 
 
-def set_config(app: Sphinx):
-    """
-    Save the configuration data from the user to the environment for easy
-    retrieval later
-
-    Args:
-        app (Sphinx): Sphinx app
-    """
-    app.env.datatables_config = Config(
+def get_config(app: Sphinx) -> Config:
+    return Config(
         datatables_version=app.config.datatables_version,
         datatables_class=app.config.datatables_class,
         datatables_options=app.config.datatables_options,
     )
-
-
-def get_config(app: Sphinx) -> Config:
-    return app.env.datatables_config
 
 
 def add_datatables_scripts(
@@ -48,7 +39,7 @@ def add_datatables_scripts(
     templatename: str,
     context: dict,
     doctree: nodes.document,
-):
+) -> None:
     """
     Add the scripts to enable Datatables
     """
@@ -100,7 +91,7 @@ def finish(app: Sphinx, exception):
             f.write(contents)
 
 
-def setup(app: Sphinx):
+def setup(app: Sphinx) -> dict[str, Any]:
     """
     Setup the extension
 
@@ -112,6 +103,12 @@ def setup(app: Sphinx):
     app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
     app.add_config_value("datatables_options", {}, "html", dict)
 
-    app.connect("builder-inited", set_config)
     app.connect("html-page-context", add_datatables_scripts)
     app.connect("build-finished", finish)
+
+    return {
+        "version": importlib.metadata.version("sphinx_datatables"),
+        "env_version": 0,  # 0 := no environment versioning needed since this extension does not store state except for the config values
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }

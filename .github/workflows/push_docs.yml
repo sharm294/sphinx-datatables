@@ -6,6 +6,7 @@ on:
     paths:
       - docs/**
       - README.rst
+  workflow_dispatch:
 
 jobs:
   pages:

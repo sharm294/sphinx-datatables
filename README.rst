@@ -24,6 +24,7 @@ Add the extension in your ``conf.py``:
 .. code-block:: python
 
     extensions = [
+        "sphinxcontrib.jquery",
         "sphinx_datatables",
     ]
 

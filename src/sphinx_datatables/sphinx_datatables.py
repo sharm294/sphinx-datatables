@@ -137,7 +137,7 @@ def setup(app: Sphinx) -> dict[str, Any]:
 
     return {
         "version": importlib.metadata.version("sphinx_datatables"),
-        "env_version": 0,  # 0 := no environment versioning needed since this extension does not store state except for the config values
+        "env_version": None,  # unset := no cache versioning required by this extension
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

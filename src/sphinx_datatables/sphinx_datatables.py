@@ -7,7 +7,8 @@ import os
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Union
+from typing import Any, Union
+import importlib.metadata
 
 import packaging.version
 from docutils import nodes
@@ -22,29 +23,17 @@ class Config:
     """
     Holds the configuration data for the extension
     """
-
     datatables_version: str
     datatables_class: str
     datatables_options: Union[dict, str]
 
 
-def set_config(app: Sphinx):
-    """
-    Save the configuration data from the user to the environment for easy
-    retrieval later
-
-    Args:
-        app (Sphinx): Sphinx app
-    """
-    app.env.datatables_config = Config(
+def get_config(app: Sphinx) -> Config:
+    return Config(
         datatables_version=app.config.datatables_version,
         datatables_class=app.config.datatables_class,
         datatables_options=app.config.datatables_options,
     )
-
-
-def get_config(app: Sphinx) -> Config:
-    return app.env.datatables_config
 
 
 def add_datatables_scripts(
@@ -53,7 +42,7 @@ def add_datatables_scripts(
     templatename: str,
     context: dict,
     doctree: nodes.document,
-):
+) -> None:
     """
     Add the scripts to enable Datatables
     """
@@ -131,7 +120,7 @@ def finish(app: Sphinx, exception):
         f.write(datatables_config_contents)
 
 
-def setup(app: Sphinx):
+def setup(app: Sphinx) -> dict[str, Any]:
     """
     Setup the extension
 
@@ -143,6 +132,12 @@ def setup(app: Sphinx):
     app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
     app.add_config_value("datatables_options", {}, "html", [dict, str])
 
-    app.connect("builder-inited", set_config)
     app.connect("html-page-context", add_datatables_scripts)
     app.connect("build-finished", finish)
+
+    return {
+        "version": importlib.metadata.version("sphinx_datatables"),
+        "env_version": None,  # unset := no cache versioning required by this extension
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }

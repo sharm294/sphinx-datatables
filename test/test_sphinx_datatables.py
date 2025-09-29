@@ -10,7 +10,7 @@ from sphinx_datatables.sphinx_datatables import create_datatables_js
     "inputs, expected_outputs",
     [
         (
-            ("sphinx-datatable", {"paging": True, "searching": False}, "2.3.0"),
+            ("sphinx-datatable", {"paging": True, "searching": False}, "2.3.4"),
             """\
 
 // Copyright (c) 2023 Varun Sharma
@@ -63,7 +63,7 @@ $(document).ready( function () {
     "pageLength": -1,
     "language": {"lengthLabels": {"-1": "Show all"}},
     "lengthMenu": [10, 25, 50, -1],
-}, "2.3.0"),
+}, "2.3.4"),
 """\
 // Copyright (c) 2023 Varun Sharma
 //
@@ -94,7 +94,7 @@ $(document).ready( function () {
 scrollY: 300,
 paging: false
 }
-""", "2.3.0"),
+""", "2.3.4"),
             """\
 // Copyright (c) 2023 Varun Sharma
 //

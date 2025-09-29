@@ -186,3 +186,35 @@ For example, if you want to set the ``pageLength`` option to ``-1`` (i.e., show 
         },
         lengthMenu: [10, 25, 50, -1]
         }"""
+
+Column Widths
+-------------
+
+Since DataTables v2.0.0, it is no longer possible to set column widths
+via ``:widths:``, e.g.,
+
+.. code-block:: rst
+
+   .. csv-table:: Title
+      :class: sphinx-datatable
+      :file: data.csv
+      :header-rows: 1
+      :widths: 20,30,50
+
+Specifying ``:widths:`` with DataTables between v2.0.0 and v2.3.3
+resulted in `unexpected formatting`_, but v2.3.4 fixed this.  If you
+still wish to control your column widths, you can do so with
+
+.. code-block:: python
+
+   datatables_options = {
+       "columnDefs": [
+           {"width": "20%", "targets": 0},
+           {"width": "30%", "targets": 1},
+           {"width": "50%", "targets": 2},
+       ]
+
+in your ``conf.py``, but that will apply to all ``sphinx-datatable``
+tables in your site.
+
+.. _unexpected formatting: https://github.com/sharm294/sphinx-datatables/issues/13

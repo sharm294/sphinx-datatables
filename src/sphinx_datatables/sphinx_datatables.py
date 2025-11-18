@@ -139,7 +139,7 @@ def setup(app: Sphinx):
         app (Sphinx): Sphinx app
     """
 
-    app.add_config_value("datatables_version", "2.3.4", "html", str)
+    app.add_config_value("datatables_version", "2.3.5", "html", str)
     app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
     app.add_config_value("datatables_options", {}, "html", [dict, str])
 

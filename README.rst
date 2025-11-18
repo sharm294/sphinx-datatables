@@ -59,8 +59,8 @@ Your table must have a valid header row.
     This issue was reported in `issue#13 <https://github.com/sharm294/sphinx-datatables/issues/13>`__.
 
 .. note::
-    You may want to add this package as a documentation dependency to your setup procedure.
-    As any other semver-following project, it is suggested to pin the version for reproducibility and not breaking the build process once there are
+    You may want to add this package as a dependency to your documentation build process.
+    As any other semver-following project, it is suggested to pin the version for reproducibility and avoid breaking the build process once there are
     releases with breaking changes.
 
     You can either specify the exact dependency as ``sphinx-datatables==x.y.z`` or

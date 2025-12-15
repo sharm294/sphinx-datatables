@@ -1,3 +1,7 @@
+# Copyright (c) 2025 Varun Sharma
+#
+# SPDX-License-Identifier: MIT
+
 """
 Tests suite for sphinx-datatables
 """
@@ -10,7 +14,7 @@ from sphinx_datatables.sphinx_datatables import create_datatables_js
     "inputs, expected_outputs",
     [
         (
-            ("sphinx-datatable", {"paging": True, "searching": False}, "2.3.0"),
+            ("sphinx-datatable", {"paging": True, "searching": False}, "2.3.5"),
             """\
 
 // Copyright (c) 2023 Varun Sharma
@@ -25,7 +29,7 @@ $(document).ready( function () {
         },
     );
 } );
-"""
+""",
         ),
         (
             ("sphinx-datatable", {"paging": True, "searching": False}, "3.0.0"),
@@ -42,7 +46,7 @@ $(document).ready( function () {
         },
     );
 } );
-"""
+""",
         ),
         (
             ("another-datatable", {}, "3.0.0"),
@@ -56,15 +60,19 @@ $(document).ready( function () {
         {},
     );
 } );
-"""
+""",
         ),
         (
-            ("sphinx-datatable", {
-    "pageLength": -1,
-    "language": {"lengthLabels": {"-1": "Show all"}},
-    "lengthMenu": [10, 25, 50, -1],
-}, "2.3.0"),
-"""\
+            (
+                "sphinx-datatable",
+                {
+                    "pageLength": -1,
+                    "language": {"lengthLabels": {"-1": "Show all"}},
+                    "lengthMenu": [10, 25, 50, -1],
+                },
+                "2.3.5",
+            ),
+            """\
 // Copyright (c) 2023 Varun Sharma
 //
 // SPDX-License-Identifier: MIT
@@ -87,14 +95,18 @@ $(document).ready( function () {
         },
     );
 } );
-"""
+""",
         ),
         (
-            ("sphinx-datatable", """{
+            (
+                "sphinx-datatable",
+                """{
 scrollY: 300,
 paging: false
 }
-""", "2.3.0"),
+""",
+                "2.3.5",
+            ),
             """\
 // Copyright (c) 2023 Varun Sharma
 //
@@ -107,14 +119,17 @@ $(document).ready( function () {
         paging: false
         },
     );
-} );"""
+} );""",
         ),
-    ])
+    ],
+)
 def test_create_datatables_js(inputs, expected_outputs):
     """
     Test the create_datatables_js function
     """
     datatables_class, datatables_options, datatables_version = inputs
     expected_output = expected_outputs.strip()
-    result = create_datatables_js(datatables_class, datatables_options, datatables_version)
+    result = create_datatables_js(
+        datatables_class, datatables_options, datatables_version
+    )
     assert result.strip() == expected_output

@@ -2,13 +2,13 @@
 #
 # SPDX-License-Identifier: MIT
 
+import importlib.metadata
 import json
 import os
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Union
-import importlib.metadata
 
 import packaging.version
 from docutils import nodes
@@ -23,6 +23,7 @@ class Config:
     """
     Holds the configuration data for the extension
     """
+
     datatables_version: str
     datatables_class: str
     datatables_options: Union[dict, str]
@@ -59,7 +60,9 @@ def add_datatables_scripts(
         )
 
     datetables_version_str = config.datatables_version
-    if packaging.version.parse(datetables_version_str) < packaging.version.parse("2.0.0"):
+    if packaging.version.parse(datetables_version_str) < packaging.version.parse(
+        "2.0.0"
+    ):
         datatables_js = f"https://cdn.datatables.net/{datetables_version_str}/js/jquery.dataTables.min.js"
         datatables_css = f"https://cdn.datatables.net/{datetables_version_str}/css/jquery.dataTables.min.css"
     else:  # this is for DataTables 2.0.0 and above, only the minified version is available (jQuery is not included)
@@ -128,7 +131,7 @@ def setup(app: Sphinx) -> dict[str, Any]:
         app (Sphinx): Sphinx app
     """
 
-    app.add_config_value("datatables_version", "2.3.0", "html", str)
+    app.add_config_value("datatables_version", "2.3.5", "html", str)
     app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
     app.add_config_value("datatables_options", {}, "html", [dict, str])
 

@@ -65,3 +65,9 @@ The following configuration options are available with the following default val
     # any custom options to pass to the DataTables constructor. Note that any
     # options you set are used for all DataTables.
     datatables_options = {}
+
+    # custom remote URLs (or offline path in html_static_paths) for ...
+    ## datatables.min.js
+    datatables_js = ""
+    ## datatables.min.css
+    datatables_css = ""

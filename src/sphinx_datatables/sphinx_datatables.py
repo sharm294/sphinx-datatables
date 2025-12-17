@@ -27,6 +27,8 @@ class Config:
     datatables_version: str
     datatables_class: str
     datatables_options: Union[dict, str]
+    datatables_js: str
+    datatables_css: str
 
 
 def get_config(app: Sphinx) -> Config:
@@ -34,6 +36,8 @@ def get_config(app: Sphinx) -> Config:
         datatables_version=app.config.datatables_version,
         datatables_class=app.config.datatables_class,
         datatables_options=app.config.datatables_options,
+        datatables_js=app.config.datatables_js,
+        datatables_css=app.config.datatables_css,
     )
 
 
@@ -69,12 +73,18 @@ def add_datatables_scripts(
         datatables_js = f"https://cdn.datatables.net/v/dt/dt-{datetables_version_str}/datatables.min.js"
         datatables_css = f"https://cdn.datatables.net/v/dt/dt-{datetables_version_str}/datatables.min.css"
 
+    if config.datatables_js:
+        datatables_js = config.datatables_js
+
+    if config.datatables_css:
+        datatables_css = config.datatables_css
+
     app.add_js_file(datatables_js)
     app.add_css_file(datatables_css)
     app.add_js_file("activate_datatables.js")
 
 
-def datatables_options_to_js(options: Union[dict, str], indent: str):
+def datatables_options_to_js(options: Union[dict, str], indent: str) -> str:
     """
     Convert a Python nested dictionary to a valid JS dictionary object as a string
     or the string itself if it's not a dict, but indented.
@@ -92,7 +102,9 @@ def datatables_options_to_js(options: Union[dict, str], indent: str):
 
 
 def create_datatables_js(
-    datatables_class: str, datatables_options: Union[dict, str], datatables_version: str
+    datatables_class: str,
+    datatables_options: Union[dict, str],
+    datatables_version: str,
 ) -> str:
     """
     Create the JS file to activate datatables
@@ -111,7 +123,7 @@ def create_datatables_js(
     return contents
 
 
-def finish(app: Sphinx, exception):
+def finish(app: Sphinx, exception) -> None:
     config = get_config(app)
     datatables_config_contents = create_datatables_js(
         config.datatables_class,
@@ -134,6 +146,8 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.add_config_value("datatables_version", "2.3.5", "html", str)
     app.add_config_value("datatables_class", "sphinx-datatable", "html", str)
     app.add_config_value("datatables_options", {}, "html", [dict, str])
+    app.add_config_value("datatables_js", "", "html", str)
+    app.add_config_value("datatables_css", "", "html", str)
 
     app.connect("html-page-context", add_datatables_scripts)
     app.connect("build-finished", finish)

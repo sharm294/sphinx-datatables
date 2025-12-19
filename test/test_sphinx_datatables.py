@@ -5,13 +5,20 @@
 """
 Tests suite for sphinx-datatables
 """
+import importlib.metadata
 from pathlib import Path
 from typing import List
 
 import pytest
+from packaging.version import Version
 from sphinx.testing.util import SphinxTestApp
 
 from sphinx_datatables.sphinx_datatables import create_datatables_js
+
+if Version(importlib.metadata.version("sphinx")) >= Version("7"):
+    SphinxTestPath = Path
+else:
+    from sphinx.testing.path import path as SphinxTestPath
 
 
 @pytest.mark.parametrize(
@@ -166,7 +173,7 @@ def test_custom_js_css(
             encoding="utf-8",
         )
 
-    app = SphinxTestApp("html", basic_site, build)
+    app = SphinxTestApp("html", SphinxTestPath(basic_site), SphinxTestPath(build))
     app.build()
 
     index_html = (build / "html/index.html").read_text(encoding="utf-8")

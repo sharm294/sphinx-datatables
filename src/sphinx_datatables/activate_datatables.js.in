@@ -3,7 +3,16 @@
 // SPDX-License-Identifier: MIT
 
 $(document).ready( function () {
-    $('table.${datatables_class}').DataTable(
-${datatables_options}
+{%- if not datatables_selector_options %}
+    $('table.{{ datatables_class }}').DataTable(
+{{ datatables_options }}
     );
+{%- else -%}
+    {% for selector, options in datatables_selector_options.items() %}
+    new DataTable(
+        `{{ selector }}`,
+{{ options }}
+    );
+    {% endfor %}
+{%- endif %}
 } );

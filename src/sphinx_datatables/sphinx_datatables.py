@@ -8,8 +8,9 @@ import os
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Dict, Union
 
+import jinja2
 import packaging.version
 from docutils import nodes
 from sphinx.application import Sphinx
@@ -29,6 +30,7 @@ class Config:
     datatables_options: Union[dict, str]
     datatables_js: str
     datatables_css: str
+    datatables_selector_options: Dict[str, Union[dict, str]]
 
 
 def get_config(app: Sphinx) -> Config:
@@ -38,6 +40,7 @@ def get_config(app: Sphinx) -> Config:
         datatables_options=app.config.datatables_options,
         datatables_js=app.config.datatables_js,
         datatables_css=app.config.datatables_css,
+        datatables_selector_options=app.config.datatables_selector_options,
     )
 
 
@@ -105,22 +108,26 @@ def create_datatables_js(
     datatables_class: str,
     datatables_options: Union[dict, str],
     datatables_version: str,
+    *,
+    datatables_selector_options: Union[dict[str, Any], None] = None,
 ) -> str:
     """
     Create the JS file to activate datatables
     """
-    custom_file = str(
-        Path(__file__).parent.joinpath("activate_datatables.js").absolute()
+    custom_file = Path(__file__).parent.joinpath("activate_datatables.js.in")
+    template = jinja2.Template(custom_file.read_text(encoding="utf-8"))
+    selector_js = {
+        selector: datatables_options_to_js(options, INDENT * 2)
+        for selector, options in (datatables_selector_options or {}).items()
+    }
+
+    rendered = template.render(
+        datatables_options=datatables_options_to_js(datatables_options, INDENT * 2),
+        datatables_class=datatables_class,
+        datatables_selector_options=selector_js,
     )
-    with open(custom_file + ".in", "r") as template:
-        contents = template.read()
-        contents = contents.replace(r"${datatables_class}", datatables_class)
-        datatables_options = datatables_options_to_js(datatables_options, INDENT * 2)
-        datatables_options = datatables_options.replace(
-            r"${datatables_version}", datatables_version
-        )
-        contents = contents.replace(r"${datatables_options}", datatables_options)
-    return contents
+
+    return rendered.replace(r"${datatables_version}", datatables_version)
 
 
 def finish(app: Sphinx, exception) -> None:
@@ -129,6 +136,7 @@ def finish(app: Sphinx, exception) -> None:
         config.datatables_class,
         config.datatables_options,
         config.datatables_version,
+        datatables_selector_options=config.datatables_selector_options,
     )
     asset_file = os.path.join(app.builder.outdir, "_static/activate_datatables.js")
     with open(asset_file, "w+") as f:
@@ -148,6 +156,7 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.add_config_value("datatables_options", {}, "html", [dict, str])
     app.add_config_value("datatables_js", "", "html", str)
     app.add_config_value("datatables_css", "", "html", str)
+    app.add_config_value("datatables_selector_options", {}, "html", dict)
 
     app.connect("html-page-context", add_datatables_scripts)
     app.connect("build-finished", finish)

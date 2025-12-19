@@ -66,6 +66,12 @@ The following configuration options are available with the following default val
     # options you set are used for all DataTables.
     datatables_options = {}
 
+    # any custom options to pass to the DataTables constructor, keyed by
+    # CSS selector
+    datatables_selector_options = {
+        # "table.sphinx-datatable": {}
+    }
+
     # custom remote URLs (or offline path in html_static_paths) for ...
     ## datatables.min.js
     datatables_js = ""

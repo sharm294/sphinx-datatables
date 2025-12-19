@@ -187,6 +187,7 @@ For example, if you want to set the ``pageLength`` option to ``-1`` (i.e., show 
         lengthMenu: [10, 25, 50, -1]
         }"""
 
+
 Column Widths
 -------------
 
@@ -218,3 +219,25 @@ in your ``conf.py``, but that will apply to all ``sphinx-datatable``
 tables in your site.
 
 .. _unexpected formatting: https://github.com/sharm294/sphinx-datatables/issues/13
+
+Custom Selectors
+----------------
+
+To set options for *only* a specific table or tables, use ``datatables_selector_options``,
+a dictionary of DataTables options keyed by CSS selectors. These values will
+be merged with the default values configured in ``datatables_options``.
+
+.. code-block:: python
+
+    # in conf.py
+    datatables_selector_options = {
+        # the effective default behavior uses ``datatables_options``
+        # "table.sphinx-datatable": {}
+        # per selector options
+        "table.a-table": {
+            "title": ["A", "B", "C"]
+        },
+        "table.another-table, .table#yet-another-table": {
+            "title": ["X", "Y", "Z"]
+        }
+    }

@@ -5,9 +5,20 @@
 """
 Tests suite for sphinx-datatables
 """
+import importlib.metadata
+from pathlib import Path
+from typing import List
+
 import pytest
+from packaging.version import Version
+from sphinx.testing.util import SphinxTestApp
 
 from sphinx_datatables.sphinx_datatables import create_datatables_js
+
+if Version(importlib.metadata.version("sphinx")) >= Version("7"):
+    SphinxTestPath = Path
+else:
+    from sphinx.testing.path import path as SphinxTestPath
 
 
 @pytest.mark.parametrize(
@@ -133,3 +144,85 @@ def test_create_datatables_js(inputs, expected_outputs):
         datatables_class, datatables_options, datatables_version
     )
     assert result.strip() == expected_output
+
+
+@pytest.mark.parametrize("add_js", [True, False])
+@pytest.mark.parametrize("add_css", [False, True])
+def test_custom_js_css(
+    tmp_path: Path, basic_site: Path, add_js: bool, add_css: bool
+) -> None:
+    """
+    Test custom JS/CSS ends up in the built output when configured.
+    """
+    build = tmp_path / "build"
+    _static = basic_site / "_static"
+    conf_lines: List[str] = []
+
+    if add_js:
+        test_js = _static / "test.js"
+        conf_lines += [f"datatables_js = '{test_js.name}'"]
+
+    if add_css:
+        test_css = _static / "test.css"
+        conf_lines += [f"datatables_css = '{test_css.name}'"]
+
+    if conf_lines:
+        conf_py = basic_site / "conf.py"
+        conf_py.write_text(
+            "\n".join([conf_py.read_text(encoding="utf-8"), *conf_lines]),
+            encoding="utf-8",
+        )
+
+    app = SphinxTestApp("html", SphinxTestPath(basic_site), SphinxTestPath(build))
+    app.build()
+
+    index_html = (build / "html/index.html").read_text(encoding="utf-8")
+
+    if add_js:
+        assert f"_static/{test_js.name}" in index_html
+
+    if add_css:
+        assert f"_static/{test_css.name}" in index_html
+
+    if add_js and add_css:
+        assert "cdn.datatables.net" not in index_html
+
+
+@pytest.fixture
+def basic_site(tmp_path: Path) -> Path:
+    """
+    Provide a basic site folder with a single page with a table and config.
+    """
+    src = tmp_path / "src"
+    src.mkdir()
+
+    _static = src / "_static"
+    _static.mkdir()
+
+    conf_py = src / "conf.py"
+    conf_py.write_text(
+        """
+extensions = ["sphinxcontrib.jquery", "sphinx_datatables"]
+html_static_path = ["_static"]
+""".strip(),
+        encoding="utf-8",
+    )
+
+    index_rst = src / "index.rst"
+    index_rst.write_text(
+        """
+test
+====
+
+.. table:: Title
+    :class: sphinx-datatable
+
+    =================== =================== ===================
+    Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
+    =================== =================== ===================
+    Row 1, column 1     Row 1, column 2     Row 1, column 3
+    =================== =================== ===================
+""".strip(),
+        encoding="utf-8",
+    )
+    return src

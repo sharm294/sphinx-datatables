@@ -117,8 +117,8 @@ else:
                 $(document).ready( function () {
                     $('table.sphinx-datatable').DataTable(
                         {
-                        scrollY: 300,
-                        paging: false
+                            "scrollY": 300,
+                            "paging": false
                         },
                     );
                 } );"""),

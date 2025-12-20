@@ -5,6 +5,7 @@
 """Tests suite for sphinx-datatables."""
 
 import importlib.metadata
+import textwrap
 from pathlib import Path
 from typing import Any
 
@@ -25,52 +26,48 @@ else:
     [
         (
             ("sphinx-datatable", {"paging": True, "searching": False}, "2.3.5"),
-            """\
+            textwrap.dedent("""
+                // Copyright (c) 2023 Varun Sharma
+                //
+                // SPDX-License-Identifier: MIT
 
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
-
-$(document).ready( function () {
-    $('table.sphinx-datatable').DataTable(
-        {
-            "paging": true,
-            "searching": false
-        },
-    );
-} );
-""",
+                $(document).ready( function () {
+                    $('table.sphinx-datatable').DataTable(
+                        {
+                            "paging": true,
+                            "searching": false
+                        },
+                    );
+                } );"""),
         ),
         (
             ("sphinx-datatable", {"paging": True, "searching": False}, "3.0.0"),
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
+            textwrap.dedent("""
+                // Copyright (c) 2023 Varun Sharma
+                //
+                // SPDX-License-Identifier: MIT
 
-$(document).ready( function () {
-    $('table.sphinx-datatable').DataTable(
-        {
-            "paging": true,
-            "searching": false
-        },
-    );
-} );
-""",
+                $(document).ready( function () {
+                    $('table.sphinx-datatable').DataTable(
+                        {
+                            "paging": true,
+                            "searching": false
+                        },
+                    );
+                } );"""),
         ),
         (
             ("another-datatable", {}, "3.0.0"),
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
+            textwrap.dedent("""\
+                // Copyright (c) 2023 Varun Sharma
+                //
+                // SPDX-License-Identifier: MIT
 
-$(document).ready( function () {
-    $('table.another-datatable').DataTable(
-        {},
-    );
-} );
-""",
+                $(document).ready( function () {
+                    $('table.another-datatable').DataTable(
+                        {},
+                    );
+                } );"""),
         ),
         (
             (
@@ -82,54 +79,49 @@ $(document).ready( function () {
                 },
                 "2.3.5",
             ),
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
+            textwrap.dedent("""
+                // Copyright (c) 2023 Varun Sharma
+                //
+                // SPDX-License-Identifier: MIT
 
-$(document).ready( function () {
-    $('table.sphinx-datatable').DataTable(
-        {
-            "pageLength": -1,
-            "language": {
-                "lengthLabels": {
-                    "-1": "Show all"
-                }
-            },
-            "lengthMenu": [
-                10,
-                25,
-                50,
-                -1
-            ]
-        },
-    );
-} );
-""",
+                $(document).ready( function () {
+                    $('table.sphinx-datatable').DataTable(
+                        {
+                            "pageLength": -1,
+                            "language": {
+                                "lengthLabels": {
+                                    "-1": "Show all"
+                                }
+                            },
+                            "lengthMenu": [
+                                10,
+                                25,
+                                50,
+                                -1
+                            ]
+                        },
+                    );
+                } );"""),
         ),
         (
             (
                 "sphinx-datatable",
-                """{
-scrollY: 300,
-paging: false
-}
-""",
+                {"scrollY": 300, "paging": False},
                 "2.3.5",
             ),
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
+            textwrap.dedent("""
+                // Copyright (c) 2023 Varun Sharma
+                //
+                // SPDX-License-Identifier: MIT
 
-$(document).ready( function () {
-    $('table.sphinx-datatable').DataTable(
-        {
-        scrollY: 300,
-        paging: false
-        },
-    );
-} );""",
+                $(document).ready( function () {
+                    $('table.sphinx-datatable').DataTable(
+                        {
+                        scrollY: 300,
+                        paging: false
+                        },
+                    );
+                } );"""),
         ),
     ],
 )
@@ -202,28 +194,26 @@ def basic_site(tmp_path: Path) -> Path:
 
     conf_py = src / "conf.py"
     conf_py.write_text(
-        """
-extensions = ["sphinxcontrib.jquery", "sphinx_datatables"]
-html_static_path = ["_static"]
-""".strip(),
+        textwrap.dedent("""
+            extensions = ["sphinxcontrib.jquery", "sphinx_datatables"]
+            html_static_path = ["_static"]""").strip(),
         encoding="utf-8",
     )
 
     index_rst = src / "index.rst"
     index_rst.write_text(
-        """
-test
-====
+        textwrap.dedent("""
+            test
+            ====
 
-.. table:: Title
-    :class: sphinx-datatable
+            .. table:: Title
+                :class: sphinx-datatable
 
-    =================== =================== ===================
-    Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
-    =================== =================== ===================
-    Row 1, column 1     Row 1, column 2     Row 1, column 3
-    =================== =================== ===================
-""".strip(),
+                =================== =================== ===================
+                Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
+                =================== =================== ===================
+                Row 1, column 1     Row 1, column 2     Row 1, column 3
+                =================== =================== ===================""").strip(),
         encoding="utf-8",
     )
     return src

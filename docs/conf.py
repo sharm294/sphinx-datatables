@@ -2,19 +2,18 @@
 #
 # SPDX-License-Identifier: MIT
 
+"""Sphinx configuration."""
+
 # -- Project information -----------------------------------------------------
 
 project = "sphinx-datatables"
-copyright = "2023 Varun Sharma"
+copyright = "2023 Varun Sharma"  # noqa: A001
 author = "Varun Sharma"
 
 # override this value to build different versions
 version = "master"
 
-if version != "master":
-    release = f"v{version}"
-else:
-    release = version
+release = f"v{version}" if version != "master" else version
 
 # -- General configuration ---------------------------------------------------
 
@@ -51,11 +50,6 @@ exclude_patterns = [
 ]
 
 # -- Options for HTML output -------------------------------------------------
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ["_static"]
 
 html_last_updated_fmt = "%B %d, %Y"
 

@@ -7,12 +7,19 @@ $(document).ready( function () {
     $('table.{{ datatables_class }}').DataTable(
 {{ datatables_options }}
     );
-{%- else -%}
-    {% for selector, options in datatables_selector_options.items() %}
-    new DataTable(
-        `{{ selector }}`,
+{%- else %}
+    $.extend( $.fn.dataTable.defaults,
+{{ datatables_options }}
+    );
+{%- if datatables_class %}
+
+    $(`table.{{ datatables_class }}`).DataTable();
+{%- endif -%}
+{%- for selector, options in datatables_selector_options.items() %}
+
+    $(`{{ selector }}`).DataTable(
 {{ options }}
     );
-    {% endfor %}
+{%- endfor -%}
 {%- endif %}
 } );

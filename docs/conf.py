@@ -58,3 +58,15 @@ exclude_patterns = [
 # html_static_path = ["_static"]
 
 html_last_updated_fmt = "%B %d, %Y"
+
+# -- Options for DataTables
+
+datatables_selector_options = {
+    "table.sphinx-datatable-20-30-50": {
+        "columnDefs": [
+            {"width": "20%", "targets": 0},
+            {"width": "30%", "targets": 1},
+            {"width": "50%", "targets": 2},
+        ]
+    }
+}

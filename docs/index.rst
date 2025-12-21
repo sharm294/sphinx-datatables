@@ -138,8 +138,12 @@ Custom Options
 
 DataTables comes with many `options <https://datatables.net/reference/option/>`__.
 By default, no options are set.
-If you want to change any of them, you can use the `datatables_options` configuration option in `conf.py`.
-Note that all DataTables will share the same options you set here.
+
+Global Options
+^^^^^^^^^^^^^^
+
+If you want to change any of the options for *all* tables, use the ``datatables_options``
+configuration option in ``conf.py``.
 
 For example, to set the `internationalization plugin <https://datatables.net/plug-ins/i18n/>`__:
 
@@ -152,7 +156,7 @@ For example, to set the `internationalization plugin <https://datatables.net/plu
         }
     }
     # this is equivalent to JavaScript:
-    datatables_options = """\
+    datatables_options = """
     {
         language: {
             url: 'https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json,'
@@ -187,57 +191,82 @@ For example, if you want to set the ``pageLength`` option to ``-1`` (i.e., show 
         lengthMenu: [10, 25, 50, -1]
         }"""
 
+Per-Table Options
+^^^^^^^^^^^^^^^^^
+
+Set options for a specific table (or tables) with ``datatables_selector_options``,
+a dictionary of DataTables options with full DOM selectors as keys. Any per-table
+options will be merged with the global ``datatables_options``.
+
+.. code-block:: python
+
+    # in conf.py
+    # options applied to all tables
+    datatables_options = { "paging": True }
+    # options for specific tables
+    datatables_selector_options = {
+        # options may be a JS string...
+        "table.a-table": "{title: ['A', 'B', 'C']}",
+        # ... or a python dictionary
+        """table[data-search="false"]""": {
+            # an explicit override of the global defaults
+            "paging": False
+        }
+    }
+
+.. warning:: Avoid overlapping selectors.
+
+    If two selectors overlap, DataTables will try to initialize a specific table twice,
+    throwing a ``Cannot reinitialise DataTable`` browser prompt.
+
+By default, a selector table selector scoped to ``datatables_class`` is created.
+Set ``datatables_class = ""`` in ``conf.py`` to avoid this default initializer.
 
 Column Widths
 -------------
 
-Since DataTables v2.0.0, it is no longer possible to set column widths
-via ``:widths:``, e.g.,
-
-.. code-block:: rst
-
-   .. csv-table:: Title
-      :class: sphinx-datatable
-      :file: data.csv
-      :header-rows: 1
-      :widths: 20,30,50
-
 Specifying ``:widths:`` with DataTables between v2.0.0 and v2.3.3
-resulted in `unexpected formatting`_, but v2.3.4 fixed this.  If you
-still wish to control your column widths, you can do so with
-
-.. code-block:: python
-
-   datatables_options = {
-       "columnDefs": [
-           {"width": "20%", "targets": 0},
-           {"width": "30%", "targets": 1},
-           {"width": "50%", "targets": 2},
-       ]
-
-in your ``conf.py``, but that will apply to all ``sphinx-datatable``
-tables in your site.
+resulted in `unexpected formatting`_, but v2.3.4 fixed this.
 
 .. _unexpected formatting: https://github.com/sharm294/sphinx-datatables/issues/13
 
-Custom Selectors
-----------------
+To set column widths for a single table, provide a unique selector (such as with a ``:class:``):
 
-To set options for *only* a specific table or tables, use ``datatables_selector_options``,
-a dictionary of DataTables options keyed by CSS selectors. These values will
-be merged with the default values configured in ``datatables_options``.
+.. code-block:: rst
+
+    .. table:: Custom Widths
+        :class: sphinx-datatable-20-30-50
+
+        =================== =================== ===================
+        Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
+        =================== =================== ===================
+        Row 1, column 1     Row 1, column 2     Row 1, column 3
+        Row 1, column 1     Row 2, column 2     Row 2, column 3
+        =================== =================== ===================
+
+Then reference the selector in ``conf.py``:
 
 .. code-block:: python
 
     # in conf.py
     datatables_selector_options = {
-        # the effective default behavior uses ``datatables_options``
-        # "table.sphinx-datatable": {}
-        # per selector options
-        "table.a-table": {
-            "title": ["A", "B", "C"]
-        },
-        "table.another-table, .table#yet-another-table": {
-            "title": ["X", "Y", "Z"]
+        "table.sphinx-datatable-20-30-50": {
+            "columnDefs": [
+                {"width": "20%", "targets": 0},
+                {"width": "30%", "targets": 1},
+                {"width": "50%", "targets": 2},
+            ]
         }
     }
+
+The table should now appear with the expected column widths:
+
+.. table:: Custom Widths
+    :class: sphinx-datatable-20-30-50
+
+    =================== =================== ===================
+    Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
+    =================== =================== ===================
+    Row 1, column 1     Row 1, column 2     Row 1, column 3
+    Row 1, column 1     Row 2, column 2     Row 2, column 3
+    =================== =================== ===================

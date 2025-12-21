@@ -7,7 +7,7 @@ Tests suite for sphinx-datatables
 """
 import importlib.metadata
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List
 
 import pytest
 from packaging.version import Version
@@ -143,6 +143,119 @@ def test_create_datatables_js(inputs, expected_outputs):
     result = create_datatables_js(
         datatables_class, datatables_options, datatables_version
     )
+    assert result.strip() == expected_output
+
+
+@pytest.mark.parametrize(
+    ("inputs", "expected_outputs"),
+    [
+        # single selector
+        (
+            {
+                "datatables_options": {"paging": True},
+                "datatables_selector_options": {
+                    """.custom-selector[data-attr="value"]""": {"searching": False}
+                },
+            },
+            """\
+// Copyright (c) 2023 Varun Sharma
+//
+// SPDX-License-Identifier: MIT
+
+$(document).ready( function () {
+    $.extend( $.fn.dataTable.defaults,
+        {
+            "paging": true
+        },
+    );
+
+    $(`table.sphinx-datatable`).DataTable();
+
+    $(`.custom-selector[data-attr="value"]`).DataTable(
+        {
+            "searching": false
+        },
+    );
+} );""",
+        ),
+        # single selector, no default
+        (
+            {
+                "datatables_class": "",
+                "datatables_options": {"paging": True},
+                "datatables_selector_options": {
+                    """.custom-selector[data-attr="value"]""": "{searching: false},"
+                },
+            },
+            """\
+// Copyright (c) 2023 Varun Sharma
+//
+// SPDX-License-Identifier: MIT
+
+$(document).ready( function () {
+    $.extend( $.fn.dataTable.defaults,
+        {
+            "paging": true
+        },
+    );
+
+    $(`.custom-selector[data-attr="value"]`).DataTable(
+        {searching: false},
+    );
+} );""",
+        ),
+        # multiple selectors, version flag
+        (
+            {
+                "datatables_options": {
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json"
+                    }
+                },
+                "datatables_selector_options": {
+                    """.custom-selector[data-attr="value"]""": "{searching: false},",
+                    """.another-custom-selector""": {"searching": True},
+                },
+            },
+            """\
+// Copyright (c) 2023 Varun Sharma
+//
+// SPDX-License-Identifier: MIT
+
+$(document).ready( function () {
+    $.extend( $.fn.dataTable.defaults,
+        {
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/2.3.5/i18n/fr-FR.json"
+            }
+        },
+    );
+
+    $(`table.sphinx-datatable`).DataTable();
+
+    $(`.custom-selector[data-attr="value"]`).DataTable(
+        {searching: false},
+    );
+
+    $(`.another-custom-selector`).DataTable(
+        {
+            "searching": true
+        },
+    );
+} );""",
+        ),
+    ],
+)
+def test_create_datables_js_selectors(
+    inputs: Dict[str, Any], expected_outputs: str
+) -> None:
+    js_kwargs = {
+        "datatables_class": "sphinx-datatable",
+        "datatables_version": "2.3.5",
+    }
+    js_kwargs.update(inputs)
+    expected_output = expected_outputs.strip()
+    result = create_datatables_js(**js_kwargs)
     assert result.strip() == expected_output
 
 

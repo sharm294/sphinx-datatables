@@ -44,6 +44,7 @@ Your table must have a valid header row.
 These can be configured for all tables using the ``datatables_options`` variable in ``conf.py``.
 
 .. note::
+
     By using ``DataTables`` you are introducing many features that will have side-effects on the resulting HTML live rendering (as it is JavaScript based).
     So please, bear in mind that ``Sphinx`` features or your custom styles may not be compatible with it.
 
@@ -67,7 +68,7 @@ The following configuration options are available with the following default val
     datatables_options = {}
 
     # any custom options to pass to the DataTables constructor, keyed by
-    # CSS selector
+    # DOM selector
     datatables_selector_options = {
         # "table.sphinx-datatable": {}
     }

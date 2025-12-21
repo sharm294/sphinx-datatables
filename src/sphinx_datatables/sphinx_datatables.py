@@ -27,10 +27,10 @@ class Config:
 
     datatables_version: str
     datatables_class: str
-    datatables_options: Union[dict, str]
+    datatables_options: Union[Dict[str, Any], str]
     datatables_js: str
     datatables_css: str
-    datatables_selector_options: Dict[str, Union[dict, str]]
+    datatables_selector_options: Dict[str, Union[Dict[str, Any], str]]
 
 
 def get_config(app: Sphinx) -> Config:
@@ -60,7 +60,7 @@ def add_datatables_scripts(
     # Set up jQuery first, to verify it is available and gracefully output an error
     try:
         app.setup_extension("sphinxcontrib.jquery")
-    except ExtensionError:
+    except ExtensionError:  # pragma: no cover
         raise ExtensionError(
             "sphinxcontrib.jquery is required for sphinx-datatables to work. "
             "Please add it to your extensions in conf.py."
@@ -109,13 +109,16 @@ def create_datatables_js(
     datatables_options: Union[dict, str],
     datatables_version: str,
     *,
-    datatables_selector_options: Union[dict[str, Any], None] = None,
+    datatables_selector_options: Union[Dict[str, Any], None] = None,
 ) -> str:
     """
     Create the JS file to activate datatables
     """
     custom_file = Path(__file__).parent.joinpath("activate_datatables.js.in")
-    template = jinja2.Template(custom_file.read_text(encoding="utf-8"))
+    template = jinja2.Template(
+        custom_file.read_text(encoding="utf-8"),
+        undefined=jinja2.StrictUndefined,
+    )
     selector_js = {
         selector: datatables_options_to_js(options, INDENT * 2)
         for selector, options in (datatables_selector_options or {}).items()
@@ -143,7 +146,7 @@ def finish(app: Sphinx, exception) -> None:
         f.write(datatables_config_contents)
 
 
-def setup(app: Sphinx) -> dict[str, Any]:
+def setup(app: Sphinx) -> Dict[str, Any]:
     """
     Setup the extension
 

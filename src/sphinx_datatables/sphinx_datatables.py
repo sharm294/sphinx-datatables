@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import jinja2
 import packaging.version
 from docutils import nodes
 from sphinx.application import Sphinx
@@ -28,6 +29,7 @@ class Config:
     datatables_options: dict | str
     datatables_js: str
     datatables_css: str
+    datatables_selector_options: dict[str, dict[str, Any] | str]
 
 
 def get_config(app: Sphinx) -> Config:
@@ -47,6 +49,7 @@ def get_config(app: Sphinx) -> Config:
         datatables_options=app.config.datatables_options,
         datatables_js=app.config.datatables_js,
         datatables_css=app.config.datatables_css,
+        datatables_selector_options=app.config.datatables_selector_options,
     )
 
 
@@ -63,14 +66,12 @@ def add_datatables_scripts(
     # Set up jQuery first, to verify it is available and gracefully output an error
     try:
         app.setup_extension("sphinxcontrib.jquery")
-    except ExtensionError:
+    except ExtensionError:  # pragma: no cover
         msg = (
-            "sphinxcontrib.jquery is required for sphinx-datatables to work.",
-            "Please add it to your extensions in conf.py.",
+            "sphinxcontrib.jquery is required for sphinx-datatables to work."
+            " Please add it to your extensions in conf.py."
         )
-        raise ExtensionError(
-            msg,
-        ) from None
+        raise ExtensionError(msg) from None
 
     datetables_version_str = config.datatables_version
     if packaging.version.parse(datetables_version_str) < packaging.version.parse(
@@ -115,20 +116,29 @@ def datatables_options_to_js(options: dict | str, indent: str) -> str:
 
 def create_datatables_js(
     datatables_class: str,
-    datatables_options: dict | str,
+    datatables_options: dict[str, Any] | str,
     datatables_version: str,
+    *,
+    datatables_selector_options: dict[str, Any] | None = None,
 ) -> str:
     """Create the JS file to activate datatables."""
-    custom_file = Path(__file__).parent.joinpath("activate_datatables.js.in").absolute()
-    with custom_file.open() as template:
-        contents = template.read()
-        contents = contents.replace(r"${datatables_class}", datatables_class)
-        datatables_options = datatables_options_to_js(datatables_options, INDENT * 2)
-        datatables_options = datatables_options.replace(
-            r"${datatables_version}",
-            datatables_version,
-        )
-        return contents.replace(r"${datatables_options}", datatables_options)
+    custom_file = Path(__file__).parent.joinpath("activate_datatables.js.in")
+    template = jinja2.Template(
+        custom_file.read_text(encoding="utf-8"),
+        undefined=jinja2.StrictUndefined,
+    )
+    selector_js = {
+        selector: datatables_options_to_js(options, INDENT * 2)
+        for selector, options in (datatables_selector_options or {}).items()
+    }
+
+    rendered = template.render(
+        datatables_options=datatables_options_to_js(datatables_options, INDENT * 2),
+        datatables_class=datatables_class,
+        datatables_selector_options=selector_js,
+    )
+
+    return rendered.replace(r"${datatables_version}", datatables_version)
 
 
 def finish(app: Sphinx, _exception: Exception | None) -> None:
@@ -147,6 +157,7 @@ def finish(app: Sphinx, _exception: Exception | None) -> None:
         config.datatables_class,
         config.datatables_options,
         config.datatables_version,
+        datatables_selector_options=config.datatables_selector_options,
     )
     asset_file = Path(app.builder.outdir) / "_static/activate_datatables.js"
     with asset_file.open("w+") as f:
@@ -166,6 +177,7 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.add_config_value("datatables_options", {}, "html", [dict, str])
     app.add_config_value("datatables_js", "", "html", str)
     app.add_config_value("datatables_css", "", "html", str)
+    app.add_config_value("datatables_selector_options", {}, "html", dict)
 
     app.connect("html-page-context", add_datatables_scripts)
     app.connect("build-finished", finish)

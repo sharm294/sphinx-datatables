@@ -69,7 +69,7 @@ def add_datatables_scripts(
     except ExtensionError:  # pragma: no cover
         msg = (
             "sphinxcontrib.jquery is required for sphinx-datatables to work."
-            "Please add it to your extensions in conf.py."
+            " Please add it to your extensions in conf.py."
         )
         raise ExtensionError(msg) from None
 
@@ -142,7 +142,16 @@ def create_datatables_js(
 
 
 def finish(app: Sphinx, _exception: Exception | None) -> None:
-    """This function is called as the build finishes."""
+    """
+    Save the assets to the static directory.
+
+    This function is called as the build finishes.
+
+    Args:
+        app (Sphinx): Sphinx app
+        _exception (Exception | None): Any exceptions from the build
+
+    """
     config = get_config(app)
     datatables_config_contents = create_datatables_js(
         config.datatables_class,

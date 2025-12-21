@@ -16,9 +16,6 @@ Installation
 
     pip install sphinx-datatables
 
-Usage
------
-
 Add the extension in your ``conf.py``:
 
 .. code-block:: python
@@ -27,6 +24,14 @@ Add the extension in your ``conf.py``:
         "sphinxcontrib.jquery",
         "sphinx_datatables",
     ]
+
+.. note::
+
+    By using ``DataTables`` you are introducing many features that will have side-effects on the resulting HTML live rendering (as it is JavaScript based).
+    So please, bear in mind that ``Sphinx`` features or your custom styles may not be compatible with it.
+
+Usage
+-----
 
 In your ``.rst`` documentation, create a table and add a custom class label.
 Your table must have a valid header row.
@@ -40,13 +45,30 @@ Your table must have a valid header row.
         John,Smith
         Jane,Doe
 
-``DataTables`` provides many `options <https://datatables.net/reference/option>`__ that can be tweaked at its configuration.
-These can be configured for all tables using the ``datatables_options`` variable in ``conf.py``.
+``DataTables`` provides many `options <https://datatables.net/reference/option>`__
+that can be tweaked at its configuration. These can be configured in ``conf.py``;
+set options for all tables using the ``datatables_options`` setting.
+Options for a specific table (or tables) on any page that match a DOM selector
+may be configured with ``datatables_selector_options`` in ``conf.py``, or on
+a single page with the directives described below.
 
-.. note::
+Directives
+----------
 
-    By using ``DataTables`` you are introducing many features that will have side-effects on the resulting HTML live rendering (as it is JavaScript based).
-    So please, bear in mind that ``Sphinx`` features or your custom styles may not be compatible with it.
+As an alternative to configuring a specific table in ``conf.py``, the following
+``.rst`` directives are available for inline usage.
+
+``datatables-json``
+^^^^^^^^^^^^^^^^^^^
+
+Configure the tables on a page with the equivalent of ``datatables_selector_options``,
+as raw JSON.
+
+.. code-block: rst
+
+    .. datatables-json::
+
+        {"table.custom-table": {"searching": false}}
 
 Configuration
 -------------

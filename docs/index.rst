@@ -194,9 +194,10 @@ For example, if you want to set the ``pageLength`` option to ``-1`` (i.e., show 
 Per-Table Options
 ^^^^^^^^^^^^^^^^^
 
-Set options for a specific table (or tables) with ``datatables_selector_options``,
-a dictionary of DataTables options with full DOM selectors as keys. Any per-table
-options will be merged with the global ``datatables_options``.
+Set options for a specific table (or tables) in ``conf.py`` with
+``datatables_selector_options``, a dictionary of DataTables options with full
+DOM selectors as keys. Any per-table options will be merged with the global
+``datatables_options``.
 
 .. code-block:: python
 
@@ -244,20 +245,17 @@ To set column widths for a single table, provide a unique selector (such as with
         Row 1, column 1     Row 2, column 2     Row 2, column 3
         =================== =================== ===================
 
-Then reference the selector in ``conf.py``:
+    .. datatables-json::
 
-.. code-block:: python
-
-    # in conf.py
-    datatables_selector_options = {
-        "table.sphinx-datatable-20-30-50": {
-            "columnDefs": [
-                {"width": "20%", "targets": 0},
-                {"width": "30%", "targets": 1},
-                {"width": "50%", "targets": 2},
-            ]
+        {
+            "table.sphinx-datatable-20-30-50": {
+                "columnDefs": [
+                    {"width": "20%", "targets": 0},
+                    {"width": "30%", "targets": 1},
+                    {"width": "50%", "targets": 2}
+                ]
+            }
         }
-    }
 
 The table should now appear with the expected column widths:
 
@@ -270,3 +268,15 @@ The table should now appear with the expected column widths:
     Row 1, column 1     Row 1, column 2     Row 1, column 3
     Row 1, column 1     Row 2, column 2     Row 2, column 3
     =================== =================== ===================
+
+.. datatables-json::
+
+    {
+        "table.sphinx-datatable-20-30-50": {
+            "columnDefs": [
+                {"width": "20%", "targets": 0},
+                {"width": "30%", "targets": 1},
+                {"width": "50%", "targets": 2}
+            ]
+        }
+    }

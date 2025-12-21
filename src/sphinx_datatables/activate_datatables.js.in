@@ -1,3 +1,6 @@
+{%- if emit_script_tag %}
+<script class="sphinx-datatables-config">
+{% endif -%}
 // Copyright (c) 2023 Varun Sharma
 //
 // SPDX-License-Identifier: MIT
@@ -8,10 +11,11 @@ $(document).ready( function () {
 {{ datatables_options }}
     );
 {%- else %}
+{%- if emit_defaults %}
     $.extend( $.fn.dataTable.defaults,
 {{ datatables_options }}
     );
-{%- if datatables_class %}
+{%- endif %}{%- if datatables_class %}
 
     $(`table.{{ datatables_class }}`).DataTable();
 {%- endif -%}
@@ -23,3 +27,6 @@ $(document).ready( function () {
 {%- endfor -%}
 {%- endif %}
 } );
+{%- if emit_script_tag %}
+</script>
+{% endif -%}

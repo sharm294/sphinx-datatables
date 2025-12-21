@@ -4,21 +4,17 @@
 
 """Tests suite for sphinx-datatables."""
 
-import importlib.metadata
 import textwrap
 from pathlib import Path
 from typing import Any
 
 import pytest
-from packaging.version import Version
 from sphinx.testing.util import SphinxTestApp
 
-from sphinx_datatables.sphinx_datatables import create_datatables_js
+from sphinx_datatables.config import Config
+from sphinx_datatables.js import create_datatables_js
 
-if Version(importlib.metadata.version("sphinx")) >= Version("7"):
-    SphinxTestPath = Path
-else:
-    from sphinx.testing.path import path as SphinxTestPath  # noqa: N812
+from .conftest import SphinxTestPath
 
 
 @pytest.mark.parametrize(
@@ -133,10 +129,126 @@ def test_create_datatables_js(
     datatables_class, datatables_options, datatables_version = inputs
     expected_output = expected_outputs.strip()
     result = create_datatables_js(
-        datatables_class,
-        datatables_options,
-        datatables_version,
+        Config(
+            datatables_class=datatables_class,
+            datatables_options=datatables_options,
+            datatables_version=datatables_version,
+        )
     )
+    assert result.strip() == expected_output
+
+
+@pytest.mark.parametrize(
+    ("inputs", "expected_outputs"),
+    [
+        # single selector
+        (
+            {
+                "datatables_options": {"paging": True},
+                "datatables_selector_options": {
+                    """.custom-selector[data-attr="value"]""": {"searching": False}
+                },
+            },
+            """\
+// Copyright (c) 2023 Varun Sharma
+//
+// SPDX-License-Identifier: MIT
+
+$(document).ready( function () {
+    $.extend( $.fn.dataTable.defaults,
+        {
+            "paging": true
+        },
+    );
+
+    $(`table.sphinx-datatable`).DataTable();
+
+    $(`.custom-selector[data-attr="value"]`).DataTable(
+        {
+            "searching": false
+        },
+    );
+} );""",
+        ),
+        # single selector, no default
+        (
+            {
+                "datatables_class": "",
+                "datatables_options": {"paging": True},
+                "datatables_selector_options": {
+                    """.custom-selector[data-attr="value"]""": "{searching: false},"
+                },
+            },
+            """\
+// Copyright (c) 2023 Varun Sharma
+//
+// SPDX-License-Identifier: MIT
+
+$(document).ready( function () {
+    $.extend( $.fn.dataTable.defaults,
+        {
+            "paging": true
+        },
+    );
+
+    $(`.custom-selector[data-attr="value"]`).DataTable(
+        {searching: false},
+    );
+} );""",
+        ),
+        # multiple selectors, version flag
+        (
+            {
+                "datatables_options": {
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json"
+                    }
+                },
+                "datatables_selector_options": {
+                    """.custom-selector[data-attr="value"]""": "{searching: false},",
+                    """.another-custom-selector""": {"searching": True},
+                },
+            },
+            """\
+// Copyright (c) 2023 Varun Sharma
+//
+// SPDX-License-Identifier: MIT
+
+$(document).ready( function () {
+    $.extend( $.fn.dataTable.defaults,
+        {
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/2.3.5/i18n/fr-FR.json"
+            }
+        },
+    );
+
+    $(`table.sphinx-datatable`).DataTable();
+
+    $(`.custom-selector[data-attr="value"]`).DataTable(
+        {searching: false},
+    );
+
+    $(`.another-custom-selector`).DataTable(
+        {
+            "searching": true
+        },
+    );
+} );""",
+        ),
+    ],
+)
+def test_create_datables_js_selectors(
+    inputs: dict[str, Any], expected_outputs: str
+) -> None:
+    """Test the create_datatables_js function with per-table options."""
+    expected_output = expected_outputs.strip()
+    config_kwargs = {
+        "datatables_class": "sphinx-datatable",
+        "datatables_version": "2.3.5",
+    }
+    config_kwargs.update(inputs)
+    result = create_datatables_js(Config(**config_kwargs))
     assert result.strip() == expected_output
 
 
@@ -170,6 +282,7 @@ def test_custom_js_css(
 
     app = SphinxTestApp("html", SphinxTestPath(basic_site), SphinxTestPath(build))
     app.build()
+    assert app.statuscode == 0
 
     index_html = (build / "html/index.html").read_text(encoding="utf-8")
 
@@ -181,39 +294,3 @@ def test_custom_js_css(
 
     if add_js and add_css:
         assert "cdn.datatables.net" not in index_html
-
-
-@pytest.fixture
-def basic_site(tmp_path: Path) -> Path:
-    """Provide a basic site folder with a single page with a table and config."""
-    src = tmp_path / "src"
-    src.mkdir()
-
-    _static = src / "_static"
-    _static.mkdir()
-
-    conf_py = src / "conf.py"
-    conf_py.write_text(
-        textwrap.dedent("""
-            extensions = ["sphinxcontrib.jquery", "sphinx_datatables"]
-            html_static_path = ["_static"]""").strip(),
-        encoding="utf-8",
-    )
-
-    index_rst = src / "index.rst"
-    index_rst.write_text(
-        textwrap.dedent("""
-            test
-            ====
-
-            .. table:: Title
-                :class: sphinx-datatable
-
-                =================== =================== ===================
-                Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
-                =================== =================== ===================
-                Row 1, column 1     Row 1, column 2     Row 1, column 3
-                =================== =================== ===================""").strip(),
-        encoding="utf-8",
-    )
-    return src

@@ -141,8 +141,8 @@ def create_datatables_js(
     return rendered.replace(r"${datatables_version}", datatables_version)
 
 
-def finish(app: Sphinx, exception: Exception | None) -> None:  # noqa: ARG001
-    """Build and write site-level JavaScript to the static folder."""
+def finish(app: Sphinx, _exception: Exception | None) -> None:
+    """This function is called as the build finishes."""
     config = get_config(app)
     datatables_config_contents = create_datatables_js(
         config.datatables_class,

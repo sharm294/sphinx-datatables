@@ -46,7 +46,7 @@ Your table must have a valid header row.
         Jane,Doe
 
 ``DataTables`` provides many `options <https://datatables.net/reference/option>`__
-that can be tweaked at its configuration. These can be configured in ``conf.py``;
+that can be tweaked at its configuration. These can be configured in ``conf.py``:
 set options for all tables using the ``datatables_options`` setting.
 Options for a specific table (or tables) on any page that match a DOM selector
 may be configured with ``datatables_selector_options`` in ``conf.py``, or on

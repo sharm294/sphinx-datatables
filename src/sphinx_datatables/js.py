@@ -26,7 +26,7 @@ def datatables_options_to_js(options: dict | str, indent: str) -> str:
     else:  # If it's not a dict, just return whatever it is (e.g., a string)
         obj = textwrap.dedent(options)
     # prepend an indent to each line
-    obj = "\n".join([indent + line for line in obj.splitlines()])
+    obj = "\n".join([indent + line for line in obj.splitlines()]).rstrip()
     if not obj.endswith(","):
         obj += ","
     return obj
@@ -44,17 +44,11 @@ def create_datatables_js(
         custom_file.read_text(encoding="utf-8"),
         undefined=jinja2.StrictUndefined,
     )
-    selector_js = {
-        selector: datatables_options_to_js(options, INDENT * 2)
-        for selector, options in config.datatables_selector_options.items()
-    }
-
     rendered = template.render(
         datatables_options=datatables_options_to_js(
             config.datatables_options, INDENT * 2
         ),
         datatables_class=config.datatables_class,
-        datatables_selector_options=selector_js,
         emit_defaults=emit_defaults,
         emit_script_tag=emit_script_tag,
     )

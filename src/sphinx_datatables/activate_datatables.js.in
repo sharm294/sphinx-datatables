@@ -6,27 +6,24 @@
 // SPDX-License-Identifier: MIT
 
 $(document).ready( function () {
-{%- if not datatables_selector_options %}
-    $('table.{{ datatables_class }}').DataTable(
-{{ datatables_options }}
-    );
-{%- else %}
 {%- if emit_defaults %}
     $.extend( $.fn.dataTable.defaults,
 {{ datatables_options }}
     );
-{%- endif %}{%- if datatables_class %}
+{%- if datatables_class %}
 
-    $(`table.{{ datatables_class }}`).DataTable();
-{%- endif -%}
-{%- for selector, options in datatables_selector_options.items() %}
-
-    $(`{{ selector }}`).DataTable(
-{{ options }}
+    $(`table.{{ datatables_class }}`).DataTable(
+        {},
     );
-{%- endfor -%}
 {%- endif %}
 } );
+{%- else -%}
+
+    $(`{{ datatables_class }}`).DataTable(
+{{ datatables_options }}
+    );
+} );
+{%- endif -%}
 {%- if emit_script_tag %}
 </script>
 {% endif -%}

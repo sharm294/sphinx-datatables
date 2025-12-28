@@ -28,11 +28,15 @@ from .conftest import SphinxTestPath
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "paging": true,
                             "searching": false
                         },
+                    );
+
+                    $(`table.sphinx-datatable`).DataTable(
+                        {},
                     );
                 } );"""),
         ),
@@ -44,11 +48,15 @@ from .conftest import SphinxTestPath
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "paging": true,
                             "searching": false
                         },
+                    );
+
+                    $(`table.sphinx-datatable`).DataTable(
+                        {},
                     );
                 } );"""),
         ),
@@ -60,7 +68,11 @@ from .conftest import SphinxTestPath
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.another-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
+                        {},
+                    );
+
+                    $(`table.another-datatable`).DataTable(
                         {},
                     );
                 } );"""),
@@ -81,7 +93,7 @@ from .conftest import SphinxTestPath
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "pageLength": -1,
                             "language": {
@@ -97,6 +109,10 @@ from .conftest import SphinxTestPath
                             ]
                         },
                     );
+
+                    $(`table.sphinx-datatable`).DataTable(
+                        {},
+                    );
                 } );"""),
         ),
         (
@@ -111,11 +127,15 @@ from .conftest import SphinxTestPath
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "scrollY": 300,
                             "paging": false
                         },
+                    );
+
+                    $(`table.sphinx-datatable`).DataTable(
+                        {},
                     );
                 } );"""),
         ),
@@ -135,120 +155,6 @@ def test_create_datatables_js(
             datatables_version=datatables_version,
         )
     )
-    assert result.strip() == expected_output
-
-
-@pytest.mark.parametrize(
-    ("inputs", "expected_outputs"),
-    [
-        # single selector
-        (
-            {
-                "datatables_options": {"paging": True},
-                "datatables_selector_options": {
-                    """.custom-selector[data-attr="value"]""": {"searching": False}
-                },
-            },
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
-
-$(document).ready( function () {
-    $.extend( $.fn.dataTable.defaults,
-        {
-            "paging": true
-        },
-    );
-
-    $(`table.sphinx-datatable`).DataTable();
-
-    $(`.custom-selector[data-attr="value"]`).DataTable(
-        {
-            "searching": false
-        },
-    );
-} );""",
-        ),
-        # single selector, no default
-        (
-            {
-                "datatables_class": "",
-                "datatables_options": {"paging": True},
-                "datatables_selector_options": {
-                    """.custom-selector[data-attr="value"]""": "{searching: false},"
-                },
-            },
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
-
-$(document).ready( function () {
-    $.extend( $.fn.dataTable.defaults,
-        {
-            "paging": true
-        },
-    );
-
-    $(`.custom-selector[data-attr="value"]`).DataTable(
-        {searching: false},
-    );
-} );""",
-        ),
-        # multiple selectors, version flag
-        (
-            {
-                "datatables_options": {
-                    "language": {
-                        "url": "https://cdn.datatables.net/plug-ins/${datatables_version}/i18n/fr-FR.json"
-                    }
-                },
-                "datatables_selector_options": {
-                    """.custom-selector[data-attr="value"]""": "{searching: false},",
-                    """.another-custom-selector""": {"searching": True},
-                },
-            },
-            """\
-// Copyright (c) 2023 Varun Sharma
-//
-// SPDX-License-Identifier: MIT
-
-$(document).ready( function () {
-    $.extend( $.fn.dataTable.defaults,
-        {
-            "language": {
-                "url": "https://cdn.datatables.net/plug-ins/2.3.5/i18n/fr-FR.json"
-            }
-        },
-    );
-
-    $(`table.sphinx-datatable`).DataTable();
-
-    $(`.custom-selector[data-attr="value"]`).DataTable(
-        {searching: false},
-    );
-
-    $(`.another-custom-selector`).DataTable(
-        {
-            "searching": true
-        },
-    );
-} );""",
-        ),
-    ],
-)
-def test_create_datables_js_selectors(
-    inputs: dict[str, Any], expected_outputs: str
-) -> None:
-    """Test the create_datatables_js function with per-table options."""
-    expected_output = expected_outputs.strip()
-    config_kwargs = {
-        "datatables_class": "sphinx-datatable",
-        "datatables_version": "2.3.5",
-    }
-    config_kwargs.update(inputs)
-    result = create_datatables_js(Config(**config_kwargs))
     assert result.strip() == expected_output
 
 

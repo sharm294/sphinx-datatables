@@ -14,7 +14,7 @@ from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 
 from .config import get_config
-from .directives import JSONOptionsDirective
+from .directives import add_directives
 from .js import create_datatables_js
 
 
@@ -92,9 +92,8 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.add_config_value("datatables_options", {}, "html", [dict, str])
     app.add_config_value("datatables_js", "", "html", str)
     app.add_config_value("datatables_css", "", "html", str)
-    app.add_config_value("datatables_selector_options", {}, "html", dict)
 
-    app.add_directive("datatables-json", JSONOptionsDirective)
+    add_directives(app)
 
     app.connect("html-page-context", add_datatables_scripts)
     app.connect("build-finished", finish)

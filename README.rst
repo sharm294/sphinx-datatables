@@ -4,20 +4,17 @@
     SPDX-License-Identifier: MIT
 
 Sphinx DataTables
-=================
+#################
 
-This extension makes it easy to use more expressive tables in Sphinx documentation with `DataTables <https://datatables.net/>`__.
+This extension makes it easy to use more expressive tables in Sphinx site with `DataTables <https://datatables.net/>`__.
 See the demo and full documentation `online <https://sharm294.github.io/sphinx-datatables/>`__.
 
 Installation
-------------
+************
 
 .. code-block:: console
 
     pip install sphinx-datatables
-
-Usage
------
 
 Add the extension in your ``conf.py``:
 
@@ -28,8 +25,19 @@ Add the extension in your ``conf.py``:
         "sphinx_datatables",
     ]
 
-In your ``.rst`` documentation, create a table and add a custom class label.
-Your table must have a valid header row.
+.. note::
+
+    Using ``DataTables`` introduces JavaScript and CSS side-effects in the
+    DOM rendered in a site visitor's browser.
+
+Usage
+*****
+
+In your ``.rst`` documentation, create a table and add a custom class.
+The default class, ``sphinx-datatable``, (can be overriden in ``conf.py`` with
+the ``datatables_class`` option).
+
+Each table must have a valid header row.
 
 .. code-block:: rst
 
@@ -40,17 +48,16 @@ Your table must have a valid header row.
         John,Smith
         Jane,Doe
 
-``DataTables`` provides many `options <https://datatables.net/reference/option>`__ that can be tweaked at its configuration.
-These can be configured for all tables using the ``datatables_options`` variable in ``conf.py``.
+``DataTables`` provides many `options <https://datatables.net/reference/option>`__
+that can be configured globally in ``conf.py`` with ``datatables_options``.
 
-.. note::
-    By using ``DataTables`` you are introducing many features that will have side-effects on the resulting HTML live rendering (as it is JavaScript based).
-    So please, bear in mind that ``Sphinx`` features or your custom styles may not be compatible with it.
+Configure options for a specific table (or tables) on any page that match a DOM
+selector with the :ref:`directives` described below.
 
 Configuration
--------------
+*************
 
-The following configuration options are available with the following default values:
+The following ``conf.py`` options are available with the following default values:
 
 .. code-block:: python
 
@@ -59,7 +66,7 @@ The following configuration options are available with the following default val
     # set the version to use for DataTables plugin
     datatables_version = "2.3.5"
 
-    # name of the class to use for tables to enable DataTables
+    # name of the class to use for tables to automatically enable DataTables
     datatables_class = "sphinx-datatable"
 
     # any custom options to pass to the DataTables constructor. Note that any
@@ -71,3 +78,96 @@ The following configuration options are available with the following default val
     datatables_js = ""
     ## datatables.min.css
     datatables_css = ""
+
+.. _directives:
+
+Directives
+**********
+
+In addition to setting global options in ``conf.py``, the following directives
+allow for configuring tables by DOM
+`selector <https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors>`__;
+this can be:
+
+* an ``#id``
+* a ``.class``
+* a more complex ``[attribute="selector"]``
+* or a comma-separated list of any of the above
+
+Each table will inherit the global defaults from ``datatables_options``, but can
+override or add any further options.
+
+.. note::  Selectors should be unique on a given page.
+
+    If a directive selector overlaps
+    with another selector, only the first one defined will take effect. This
+    includes the default selector generated from ``datatables_class``, which will
+    always resolve first.
+
+``datatables-json``
+===================
+
+Configure the tables on a page by providing a selector and any other values via
+valid JSON.
+
+.. code-block:: rst
+
+    .. datatables-json::  table.custom-table
+
+        {
+            "searching": false
+        }
+
+.. _path-option:
+
+``:path:``
+----------
+
+Use the ``:path:`` option to load ``DataTables`` options from
+a JSON file at build time.
+
+.. code-block:: rst
+
+    .. datatables-json::  table.custom-table
+        :path:  ../path/to/data/tables.json
+
+``datatables-toml``
+===================
+
+Configure the tables on a page by providing a selector and any other values via
+valid TOML. The :ref:`path-option` option is also supported.
+
+.. code-block:: rst
+
+    .. datatables-json::  table.another-custom-table, table.still-another-selector
+
+        searching = false
+
+.. note::
+
+    This requires Python 3.11+, or the ``tomli`` library.
+
+``datatables-js``
+=================
+
+Configure the tables on a page by providing a selector and any other
+values via JavaScript. The ``:path:`` option is also supported.
+
+.. code-block:: rst
+
+    .. datatables-js::  table.yet-another-custom-table
+
+        {searching: false}
+
+
+JavaScript provided this way must be an expression which returns a ``DataTable``
+options object. For highly dynamic code, use an "immediately invoked function expression",
+or `IIFE <https://developer.mozilla.org/en-US/docs/Glossary/IIFE>`__:
+
+.. code-block:: rst
+
+    .. datatables-js::  table.custom-table
+
+        ;(function() {
+            return { searching: !!0 };
+        }).call(this)

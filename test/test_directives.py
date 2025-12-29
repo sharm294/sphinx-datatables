@@ -70,4 +70,7 @@ def test_json_directive(
     sys.stderr.write(f"{NL}{io.getvalue()}{NL}")
     assert app.statuscode == 0
     index_html = (build / "html/index.html").read_text(encoding="utf-8")
-    assert "$(`table.custom-datatable`).DataTable(" in index_html
+    assert (
+        "$(`table.custom-datatable`).filter(':not(.dataTable)').DataTable("
+        in index_html
+    )

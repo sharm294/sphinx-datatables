@@ -35,7 +35,7 @@ from .conftest import SphinxTestPath
                         },
                     );
 
-                    $(`table.sphinx-datatable`).DataTable(
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
                         {},
                     );
                 } );"""),
@@ -55,7 +55,7 @@ from .conftest import SphinxTestPath
                         },
                     );
 
-                    $(`table.sphinx-datatable`).DataTable(
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
                         {},
                     );
                 } );"""),
@@ -72,7 +72,7 @@ from .conftest import SphinxTestPath
                         {},
                     );
 
-                    $(`table.another-datatable`).DataTable(
+                    $(`table.another-datatable`).filter(':not(.dataTable)').DataTable(
                         {},
                     );
                 } );"""),
@@ -110,7 +110,7 @@ from .conftest import SphinxTestPath
                         },
                     );
 
-                    $(`table.sphinx-datatable`).DataTable(
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
                         {},
                     );
                 } );"""),
@@ -134,7 +134,7 @@ from .conftest import SphinxTestPath
                         },
                     );
 
-                    $(`table.sphinx-datatable`).DataTable(
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
                         {},
                     );
                 } );"""),

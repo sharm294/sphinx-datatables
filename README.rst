@@ -87,16 +87,22 @@ Directives
 In addition to setting global options in ``conf.py``, the following directives
 allow for configuring tables by DOM
 `selector <https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors>`__;
-this can be an ``#id``, a ``.class`` or a more complex ``[attribute="selector"]``.
+this can be:
+
+* an ``#id``
+* a ``.class``
+* a more complex ``[attribute="selector"]``
+* or a comma-separated list of any of the above
 
 Each table will inherit the global defaults from ``datatables_options``, but can
 override or add any further options.
 
-.. warning:
+.. note::  Selectors should be unique on a given page.
 
-    Selectors configured this way should be unique on a given page.
-    If two directives overlap on the same page (or with the ``datatables_class``),
-    a browser alert will open.
+    If a directive selector overlaps
+    with another selector, only the first one defined will take effect. This
+    includes the default selector generated from ``datatables_class``, which will
+    always resolve first.
 
 ``datatables-json``
 ===================
@@ -137,7 +143,7 @@ valid TOML. The :ref:`path-option` option is also supported.
 
         searching = false
 
-.. note:
+.. note::
 
     This requires Python 3.11+, or the ``tomli`` library.
 

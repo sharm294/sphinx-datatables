@@ -12,14 +12,14 @@ $(document).ready( function () {
     );
 {%- if datatables_class %}
 
-    $(`table.{{ datatables_class }}`).DataTable(
+    $(`table.{{ datatables_class }}`).filter(':not(.dataTable)').DataTable(
         {},
     );
 {%- endif %}
 } );
 {%- else -%}
 
-    $(`{{ datatables_class }}`).DataTable(
+    $(`{{ datatables_class }}`).filter(':not(.dataTable)').DataTable(
 {{ datatables_options }}
     );
 } );

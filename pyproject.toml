@@ -13,7 +13,7 @@ readme = "README.rst"
 description = "Searchable and sortable tables in Sphinx documentation"
 license = {file = "LICENSE"}
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: Sphinx :: Extension",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

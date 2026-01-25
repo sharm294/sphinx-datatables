@@ -8,7 +8,7 @@
 $(document).ready( function () {
 {%- if emit_defaults %}
     $.extend( $.fn.dataTable.defaults,
-{{ datatables_options }}
+    {{ datatables_options.indent(4) }}
     );
 {%- if datatables_class %}
 
@@ -20,7 +20,7 @@ $(document).ready( function () {
 {%- else -%}
 
     $(`{{ datatables_class }}`).filter(':not(.dataTable)').DataTable(
-{{ datatables_options }}
+    {{ datatables_options.indent(4) }}
     );
 } );
 {%- endif -%}

@@ -14,7 +14,7 @@ from .config import Config
 INDENT = " " * 4
 
 
-def datatables_options_to_js(options: dict | str, indent: str) -> str:
+def datatables_options_to_js(options: dict | str) -> str:
     """
     Convert a Python nested dictionary to a valid JS dictionary object as a str.
 
@@ -26,7 +26,7 @@ def datatables_options_to_js(options: dict | str, indent: str) -> str:
     else:  # If it's not a dict, just return whatever it is (e.g., a string)
         obj = textwrap.dedent(options)
     # prepend an indent to each line
-    obj = "\n".join([indent + line for line in obj.splitlines()]).rstrip()
+    obj = textwrap.indent(obj, indent).rstrip()
     if not obj.endswith(","):
         obj += ","
     return obj
@@ -45,9 +45,7 @@ def create_datatables_js(
         undefined=jinja2.StrictUndefined,
     )
     rendered = template.render(
-        datatables_options=datatables_options_to_js(
-            config.datatables_options, INDENT * 2
-        ),
+        datatables_options=datatables_options_to_js(config.datatables_options),
         datatables_class=config.datatables_class,
         emit_defaults=emit_defaults,
         emit_script_tag=emit_script_tag,

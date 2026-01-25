@@ -3,14 +3,12 @@
 
     SPDX-License-Identifier: MIT
 
-Sphinx DataTables
-#################
-
-Documentation Contents
-**********************
+.. include:: ../README.rst
 
 .. toctree::
+    :hidden:
+    :maxdepth: 2
 
     Introduction <introduction>
-    examples
     configuration
+    examples

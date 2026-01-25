@@ -1,15 +1,20 @@
-"""JavaScript utilities."""
 # Copyright (c) 2023 Varun Sharma
 #
 # SPDX-License-Identifier: MIT
 
+"""JavaScript utilities."""
+
+from __future__ import annotations
+
 import json
 import textwrap
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import jinja2
 
-from .config import Config
+if TYPE_CHECKING:
+    from .config import SphinxDatatablesConfig
 
 INDENT = " " * 4
 
@@ -25,15 +30,13 @@ def datatables_options_to_js(options: dict | str) -> str:
         obj = json.dumps(options, indent=INDENT)
     else:  # If it's not a dict, just return whatever it is (e.g., a string)
         obj = textwrap.dedent(options)
-    # prepend an indent to each line
-    obj = textwrap.indent(obj, indent).rstrip()
     if not obj.endswith(","):
         obj += ","
     return obj
 
 
 def create_datatables_js(
-    config: Config,
+    config: SphinxDatatablesConfig,
     *,
     emit_defaults: bool = True,
     emit_script_tag: bool = False,

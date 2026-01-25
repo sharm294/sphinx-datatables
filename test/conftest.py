@@ -1,7 +1,8 @@
-"""Tests configuration for sphinx-datatables."""
 # Copyright (c) 2025 Varun Sharma
 #
 # SPDX-License-Identifier: MIT
+
+"""Tests configuration for sphinx-datatables."""
 
 import importlib.metadata
 import textwrap

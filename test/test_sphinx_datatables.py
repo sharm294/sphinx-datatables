@@ -11,7 +11,7 @@ from typing import Any
 import pytest
 from sphinx.testing.util import SphinxTestApp
 
-from sphinx_datatables.config import Config
+from sphinx_datatables.config import SphinxDatatablesConfig
 from sphinx_datatables.js import create_datatables_js
 
 from .conftest import SphinxTestPath
@@ -149,7 +149,7 @@ def test_create_datatables_js(
     datatables_class, datatables_options, datatables_version = inputs
     expected_output = expected_outputs.strip()
     result = create_datatables_js(
-        Config(
+        SphinxDatatablesConfig(
             datatables_class=datatables_class,
             datatables_options=datatables_options,
             datatables_version=datatables_version,

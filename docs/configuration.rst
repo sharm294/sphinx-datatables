@@ -1,10 +1,17 @@
-Custom Options
-##############
+..
+    Copyright (c) 2026 Varun Sharma
+
+    SPDX-License-Identifier: MIT
+
+Configuration
+#############
 
 DataTables comes with many `options <https://datatables.net/reference/option/>`__.
 By default, no options are set.
 
-Global Options
+.. _global_options:
+
+Global options
 **************
 
 If you want to change any of the options for *all* tables, use the ``datatables_options``
@@ -56,8 +63,100 @@ For example, if you want to set the ``pageLength`` option to ``-1`` (i.e., show 
         lengthMenu: [10, 25, 50, -1]
         }"""
 
+.. _directives:
 
-Custom Assets
+Directives
+**********
+
+In addition to setting global options in ``conf.py``, the following directives
+allow for configuring tables by DOM
+`selector <https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors>`__;
+this can be:
+
+* an ``#id``
+* a ``.class``
+* a more complex ``[attribute="selector"]``
+* or a comma-separated list of any of the above
+
+Each table will inherit the global defaults from ``datatables_options``, but can
+override or add any further options.
+
+.. note::  Selectors should be unique on a given page.
+
+    If a directive selector overlaps
+    with another selector, only the first one defined will take effect. This
+    includes the default selector generated from ``datatables_class``, which will
+    always resolve first.
+
+``datatables-json``
+===================
+
+Configure the tables on a page by providing a selector and any other values via
+valid JSON.
+
+.. code-block:: rst
+
+    .. datatables-json::  table.custom-table
+
+        {
+            "searching": false
+        }
+
+.. _path-option:
+
+``:path:``
+----------
+
+Use the ``:path:`` option to load ``DataTables`` options from
+a JSON file at build time.
+
+.. code-block:: rst
+
+    .. datatables-json::  table.custom-table
+        :path:  ../path/to/data/tables.json
+
+``datatables-toml``
+===================
+
+Configure the tables on a page by providing a selector and any other values via
+valid TOML. The :ref:`path-option` option is also supported.
+
+.. code-block:: rst
+
+    .. datatables-toml::  table.another-custom-table, table.still-another-selector
+
+        searching = false
+
+.. note::
+
+    This requires Python 3.11+, or the ``tomli`` library.
+
+``datatables-js``
+=================
+
+Configure the tables on a page by providing a selector and any other
+values via JavaScript. The :ref:`path-option` option is also supported.
+
+.. code-block:: rst
+
+    .. datatables-js::  table.yet-another-custom-table
+
+        {searching: false}
+
+
+JavaScript provided this way must be an expression which returns a ``DataTable``
+options object. For highly dynamic code, use an "immediately invoked function expression",
+or `IIFE <https://developer.mozilla.org/en-US/docs/Glossary/IIFE>`__:
+
+.. code-block:: rst
+
+    .. datatables-js::  table.custom-table
+
+        ;(function() {
+            return { searching: !!0 };
+        }).call(this)
+
+Custom assets
 *************
 
 The default JavaScript and CSS assets are fetched from ``https://cdn.datatables.net``
@@ -95,57 +194,3 @@ in step three, and configure the ``datatables_js`` and ``datables_css`` options:
 * Use one of the more advanced package manager approaches, such as ``npm``,
   if appropriate for your site. These generated locations for ``datatables_js``
   and ``datatable_css`` will vary based on the tool.
-
-Column Widths
-*************
-
-Specifying ``:widths:`` with DataTables between v2.0.0 and v2.3.3
-resulted in `unexpected formatting`_, but v2.3.4 fixed this.
-
-.. _unexpected formatting: https://github.com/sharm294/sphinx-datatables/issues/13
-
-To set column widths for a single table, provide a unique selector (such as with a ``:class:``):
-
-.. code-block:: rst
-
-    .. table:: Custom Widths
-        :class: sphinx-datatable-20-30-50
-
-        =================== =================== ===================
-        Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
-        =================== =================== ===================
-        Row 1, column 1     Row 1, column 2     Row 1, column 3
-        Row 1, column 1     Row 2, column 2     Row 2, column 3
-        =================== =================== ===================
-
-    .. datatables-json::  table.sphinx-datatable-20-30-50
-
-        {
-            "columnDefs": [
-                {"width": "20%", "targets": 0},
-                {"width": "30%", "targets": 1},
-                {"width": "50%", "targets": 2}
-            ]
-        }
-
-The table should now appear with the expected column widths:
-
-.. table:: Custom Widths
-    :class: sphinx-datatable-20-30-50
-
-    =================== =================== ===================
-    Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
-    =================== =================== ===================
-    Row 1, column 1     Row 1, column 2     Row 1, column 3
-    Row 1, column 1     Row 2, column 2     Row 2, column 3
-    =================== =================== ===================
-
-.. datatables-json::  table.sphinx-datatable-20-30-50
-
-    {
-        "columnDefs": [
-            {"width": "20%", "targets": 0},
-            {"width": "30%", "targets": 1},
-            {"width": "50%", "targets": 2}
-        ]
-    }

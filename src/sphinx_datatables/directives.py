@@ -1,7 +1,8 @@
-"""A directive for inline DataTables configuration."""
 # Copyright (c) 2023 Varun Sharma
 #
 # SPDX-License-Identifier: MIT
+
+"""A directive for inline DataTables configuration."""
 
 import abc
 import contextlib
@@ -17,7 +18,7 @@ from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 from sphinx.util.docutils import SphinxDirective
 
-from .config import get_config
+from .config import SphinxDatatablesConfig
 from .js import create_datatables_js
 
 HAS_TOML = False
@@ -53,7 +54,9 @@ class OptionsBase(SphinxDirective):
 
     def run(self) -> list[nodes.Node]:
         """Generate a single options ``<script>``."""
-        config = get_config(self.state.document.settings.env.config)
+        config = SphinxDatatablesConfig.from_sphinx_config(
+            self.state.document.settings.env.config
+        )
         content = self.get_path_or_content()
         config.datatables_options = self.parse_datatables_options(content)
         config.datatables_class = self.arguments[0]

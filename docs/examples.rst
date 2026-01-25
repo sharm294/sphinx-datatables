@@ -6,10 +6,76 @@
 Examples
 ########
 
-``csv-table``
-*************
+This page shows some examples of tables you can make with ``sphinx_datatables``.
+Underneath each table, the ``.rst`` code used to define the table is provided as a reference.
 
-Using the ``csv-table`` role:
+Defining a table
+****************
+
+You can define a simple table using any basic table definition role available in RST: ``list-table``, ``csv-table``, ``table``.
+Here is the same table defined with each role.
+
+.. table:: Title
+    :class: sphinx-datatable
+
+    =================== =================== ===================
+    Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
+    =================== =================== ===================
+    Row 1, column 1     Row 1, column 2     Row 1, column 3
+    Row 1, column 1     Row 2, column 2     Row 2, column 3
+    =================== =================== ===================
+
+Expand the code-blocks below to view the RST source to define this table using:
+
+.. collapse:: the "table" role
+
+    .. code-block:: rst
+
+        .. table:: Title
+            :class: sphinx-datatable
+
+            =================== =================== ===================
+            Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
+            =================== =================== ===================
+            Row 1, column 1     Row 1, column 2     Row 1, column 3
+            Row 1, column 1     Row 2, column 2     Row 2, column 3
+            =================== =================== ===================
+
+.. collapse:: the "list-table" role
+
+    .. code-block:: rst
+
+        .. list-table:: Title
+            :header-rows: 1
+            :class: sphinx-datatable
+
+            * - Heading 1, column 1
+              - Heading 1, column 2
+              - Heading 1, column 3
+            * - Row 1, column 1
+              - Row 1, column 2
+              - Row 1, column 3
+            * - Row 2, column 1
+              - Row 2, column 2
+              - Row 2, column 3
+
+.. collapse:: the "csv-table" role
+
+    .. code-block:: rst
+
+        .. csv-table:: Title
+            :header: "Heading 1, column 1","Heading 2, column 2","Heading 3, column 3"
+            :class: sphinx-datatable
+
+            "Row 1, column 1","Row 1, column 2","Row 1, column 3"
+            "Row 2, column 1","Row 2, column 2","Row 2, column 3"
+
+These tables all use the global class ``sphinx-datatable`` which can be :ref:`configured <global_options>` for all instances in ``conf.py``.
+
+A larger example
+****************
+
+With more data, this table better demonstrates more advanced features enabled by DataTables such as search, pagination and sorting:
 
 .. csv-table::
     :header: ID,First name,Last name,Birthdate,Added
@@ -36,7 +102,7 @@ Using the ``csv-table`` role:
     19,Bernita,Stroman,1973-07-24,1981-09-10 21:58:27
     20,Zula,Greenholt,2019-06-07,2020-07-24 13:13:02
 
-.. collapse:: Source code
+.. collapse:: Click here to see the .rst source code
 
     .. code-block:: rst
 
@@ -65,50 +131,19 @@ Using the ``csv-table`` role:
             19,Bernita,Stroman,1973-07-24,1981-09-10 21:58:27
             20,Zula,Greenholt,2019-06-07,2020-07-24 13:13:02
 
-``list-table``
-**************
+Per-table configuration
+***********************
 
-Using the ``list-table`` role:
+Specifying ``:widths:`` with DataTables between v2.0.0 and v2.3.3
+resulted in `unexpected formatting`_, but v2.3.4 fixed this.
 
-.. list-table:: Title
-    :header-rows: 1
-    :class: sphinx-datatable
+.. _unexpected formatting: https://github.com/sharm294/sphinx-datatables/issues/13
 
-    * - Heading 1, column 1
-      - Heading 1, column 2
-      - Heading 1, column 3
-    * - Row 1, column 1
-      - Row 1, column 2
-      - Row 1, column 3
-    * - Row 2, column 1
-      - Row 2, column 2
-      - Row 2, column 3
+Setting column widths is one example of where :ref:`per-table directives <directives>` can be useful.
+Here, we use a custom class and a per-table directive to set this table's columns to 20%, 30% and 50%, respectively:
 
-.. collapse:: Source code
-
-    .. code-block:: rst
-
-        .. list-table:: Title
-            :header-rows: 1
-            :class: sphinx-datatable
-
-            * - Heading 1, column 1
-              - Heading 1, column 2
-              - Heading 1, column 3
-            * - Row 1, column 1
-              - Row 1, column 2
-              - Row 1, column 3
-            * - Row 2, column 1
-              - Row 2, column 2
-              - Row 2, column 3
-
-``table``
-*********
-
-Using the ``table`` role:
-
-.. table:: Title
-    :class: sphinx-datatable
+.. table:: Custom Widths
+    :class: sphinx-datatable-20-30-50
 
     =================== =================== ===================
     Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
@@ -117,12 +152,22 @@ Using the ``table`` role:
     Row 1, column 1     Row 2, column 2     Row 2, column 3
     =================== =================== ===================
 
-.. collapse:: Source code
+.. datatables-json::  table.sphinx-datatable-20-30-50
+
+    {
+        "columnDefs": [
+            {"width": "20%", "targets": 0},
+            {"width": "30%", "targets": 1},
+            {"width": "50%", "targets": 2}
+        ]
+    }
+
+.. collapse:: Click here to see the .rst source code
 
     .. code-block:: rst
 
-        .. table:: Title
-            :class: sphinx-datatable
+        .. table:: Custom Widths
+            :class: sphinx-datatable-20-30-50
 
             =================== =================== ===================
             Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
@@ -130,3 +175,13 @@ Using the ``table`` role:
             Row 1, column 1     Row 1, column 2     Row 1, column 3
             Row 1, column 1     Row 2, column 2     Row 2, column 3
             =================== =================== ===================
+
+        .. datatables-json::  table.sphinx-datatable-20-30-50
+
+            {
+                "columnDefs": [
+                    {"width": "20%", "targets": 0},
+                    {"width": "30%", "targets": 1},
+                    {"width": "50%", "targets": 2}
+                ]
+            }

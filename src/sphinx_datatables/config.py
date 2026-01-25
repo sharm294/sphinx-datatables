@@ -1,19 +1,21 @@
-"""Typed configuration."""
-
 # Copyright (c) 2023 Varun Sharma
 #
 # SPDX-License-Identifier: MIT
 
-from dataclasses import dataclass, field
+"""Typed configuration."""
 
-from sphinx.config import Config as SphinxConfig
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sphinx.config import Config as SphinxConfig
 
 
 @dataclass
 class SphinxDatatablesConfig:
-    """
-    Holds the configuration data for the extension
-    """
+    """Holds the configuration data for the extension."""
 
     datatables_version: str
     datatables_class: str
@@ -22,7 +24,7 @@ class SphinxDatatablesConfig:
     datatables_css: str = ""
 
     @classmethod
-    def from_sphinx_config(cls, sphinx_config: SphinxConfig):
+    def from_sphinx_config(cls, sphinx_config: SphinxConfig) -> SphinxDatatablesConfig:
         """Create SphinxDatatablesConfig from Sphinx-loaded configuration."""
         return cls(
             datatables_version=sphinx_config.datatables_version,

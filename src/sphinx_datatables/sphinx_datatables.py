@@ -13,7 +13,7 @@ from docutils import nodes
 from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 
-from .config import get_config
+from .config import SphinxDatatablesConfig
 from .directives import add_directives
 from .js import create_datatables_js
 
@@ -26,7 +26,7 @@ def add_datatables_scripts(
     _doctree: nodes.document,
 ) -> None:
     """Add the scripts to enable Datatables."""
-    config = get_config(app.config)
+    config = SphinxDatatablesConfig.from_sphinx_config(app.config)
 
     # Set up jQuery first, to verify it is available and gracefully output an error
     try:
@@ -72,7 +72,7 @@ def finish(app: Sphinx, _exception: Exception | None) -> None:
         _exception (Exception | None): Any exceptions from the build
 
     """
-    config = get_config(app.config)
+    config = SphinxDatatablesConfig.from_sphinx_config(app.config)
     datatables_config_contents = create_datatables_js(config)
     asset_file = Path(app.builder.outdir) / "_static/activate_datatables.js"
     with asset_file.open("w+") as f:

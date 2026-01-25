@@ -21,7 +21,7 @@ classifiers = [
 ]
 keywords = ["sphinx", "table", "datatables"]
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "sphinx>4",
     "sphinxcontrib_jquery>=4.1",
@@ -50,5 +50,22 @@ dev = [
     "pytest",
 ]
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203", # incorrect-blank-line-before-class, incompatible with D211
+    "D212", # multi-line-summary-first-line, incompatible with D213
+    "COM812",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# some rules should be ignored in tests
+"test/**/*.py" = [
+    "S101", # allow asserts
+    "FBT", # allow booleans as positional arguments
+    "INP001", # don't require __init__.py
+]
+
+"docs/**/*.py" = [
+    "INP001", # don't require __init__.py
+]

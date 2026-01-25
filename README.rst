@@ -40,6 +40,13 @@ Your table must have a valid header row.
         John,Smith
         Jane,Doe
 
+``DataTables`` provides many `options <https://datatables.net/reference/option>`__ that can be tweaked at its configuration.
+These can be configured for all tables using the ``datatables_options`` variable in ``conf.py``.
+
+.. note::
+    By using ``DataTables`` you are introducing many features that will have side-effects on the resulting HTML live rendering (as it is JavaScript based).
+    So please, bear in mind that ``Sphinx`` features or your custom styles may not be compatible with it.
+
 Configuration
 -------------
 
@@ -50,7 +57,7 @@ The following configuration options are available with the following default val
     # in conf.py
 
     # set the version to use for DataTables plugin
-    datatables_version = "2.3.0"
+    datatables_version = "2.3.5"
 
     # name of the class to use for tables to enable DataTables
     datatables_class = "sphinx-datatable"
@@ -58,3 +65,9 @@ The following configuration options are available with the following default val
     # any custom options to pass to the DataTables constructor. Note that any
     # options you set are used for all DataTables.
     datatables_options = {}
+
+    # custom remote URLs (or offline path in html_static_paths) for ...
+    ## datatables.min.js
+    datatables_js = ""
+    ## datatables.min.css
+    datatables_css = ""

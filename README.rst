@@ -4,20 +4,17 @@
     SPDX-License-Identifier: MIT
 
 Sphinx DataTables
-=================
+#################
 
-This extension makes it easy to use more expressive tables in Sphinx documentation with `DataTables <https://datatables.net/>`__.
+This extension makes it easy to use more expressive tables in Sphinx site with `DataTables <https://datatables.net/>`__.
 See the demo and full documentation `online <https://sharm294.github.io/sphinx-datatables/>`__.
 
 Installation
-------------
+************
 
 .. code-block:: console
 
     pip install sphinx-datatables
-
-Usage
------
 
 Add the extension in your ``conf.py``:
 
@@ -28,8 +25,17 @@ Add the extension in your ``conf.py``:
         "sphinx_datatables",
     ]
 
-In your ``.rst`` documentation, create a table and add a custom class label.
-Your table must have a valid header row.
+.. note::
+
+    Using ``DataTables`` introduces JavaScript and CSS side-effects in the DOM rendered in a site visitor's browser.
+
+Usage
+*****
+
+In your ``.rst`` documentation, create a table and add a custom class.
+The default class, ``sphinx-datatable``, can be overriden in ``conf.py`` with the ``datatables_class`` option.
+
+Each table must have a valid header row.
 
 .. code-block:: rst
 
@@ -40,34 +46,28 @@ Your table must have a valid header row.
         John,Smith
         Jane,Doe
 
-``DataTables`` provides many `options <https://datatables.net/reference/option>`__ that can be tweaked at its configuration.
-These can be configured for all tables using the ``datatables_options`` variable in ``conf.py``.
+``DataTables`` provides many `options <https://datatables.net/reference/option>`__ that can be configured globally in ``conf.py`` with ``datatables_options``.
+You can also configure specific per-table (or tables) on any page that match a DOM selector with the directives.
 
-.. note::
-    By using ``DataTables`` you are introducing many features that will have side-effects on the resulting HTML live rendering (as it is JavaScript based).
-    So please, bear in mind that ``Sphinx`` features or your custom styles may not be compatible with it.
+See the documentation for more examples and details on per-table configuration.
 
-Configuration
--------------
+Contributions
+*************
 
-The following configuration options are available with the following default values:
+Contributions are welcome if there's a feature or bug you find.
+Please raise an issue first to discuss the request.
 
-.. code-block:: python
+To submit a PR, fork this repository and make a branch with your changes.
+You can test the project locally with:
 
-    # in conf.py
+.. code-block:: bash
 
-    # set the version to use for DataTables plugin
-    datatables_version = "2.3.5"
+    # install all dependencies
+    pip install .[docs,dev]
 
-    # name of the class to use for tables to enable DataTables
-    datatables_class = "sphinx-datatable"
+    # build the docs locally
+    ./docs/build.sh
+    # you can use a local browser to the build/ directory to view the HTML docs
 
-    # any custom options to pass to the DataTables constructor. Note that any
-    # options you set are used for all DataTables.
-    datatables_options = {}
-
-    # custom remote URLs (or offline path in html_static_paths) for ...
-    ## datatables.min.js
-    datatables_js = ""
-    ## datatables.min.css
-    datatables_css = ""
+    # run the tests
+    pytest

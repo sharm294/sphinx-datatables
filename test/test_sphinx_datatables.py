@@ -4,21 +4,17 @@
 
 """Tests suite for sphinx-datatables."""
 
-import importlib.metadata
 import textwrap
 from pathlib import Path
 from typing import Any
 
 import pytest
-from packaging.version import Version
 from sphinx.testing.util import SphinxTestApp
 
-from sphinx_datatables.sphinx_datatables import create_datatables_js
+from sphinx_datatables.config import SphinxDatatablesConfig
+from sphinx_datatables.js import create_datatables_js
 
-if Version(importlib.metadata.version("sphinx")) >= Version("7"):
-    SphinxTestPath = Path
-else:
-    from sphinx.testing.path import path as SphinxTestPath  # noqa: N812
+from .conftest import SphinxTestPath
 
 
 @pytest.mark.parametrize(
@@ -32,11 +28,15 @@ else:
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "paging": true,
                             "searching": false
                         },
+                    );
+
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
+                        {},
                     );
                 } );"""),
         ),
@@ -48,11 +48,15 @@ else:
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "paging": true,
                             "searching": false
                         },
+                    );
+
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
+                        {},
                     );
                 } );"""),
         ),
@@ -64,7 +68,11 @@ else:
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.another-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
+                        {},
+                    );
+
+                    $(`table.another-datatable`).filter(':not(.dataTable)').DataTable(
                         {},
                     );
                 } );"""),
@@ -85,7 +93,7 @@ else:
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "pageLength": -1,
                             "language": {
@@ -101,6 +109,10 @@ else:
                             ]
                         },
                     );
+
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
+                        {},
+                    );
                 } );"""),
         ),
         (
@@ -115,11 +127,15 @@ else:
                 // SPDX-License-Identifier: MIT
 
                 $(document).ready( function () {
-                    $('table.sphinx-datatable').DataTable(
+                    $.extend( $.fn.dataTable.defaults,
                         {
                             "scrollY": 300,
                             "paging": false
                         },
+                    );
+
+                    $(`table.sphinx-datatable`).filter(':not(.dataTable)').DataTable(
+                        {},
                     );
                 } );"""),
         ),
@@ -133,9 +149,11 @@ def test_create_datatables_js(
     datatables_class, datatables_options, datatables_version = inputs
     expected_output = expected_outputs.strip()
     result = create_datatables_js(
-        datatables_class,
-        datatables_options,
-        datatables_version,
+        SphinxDatatablesConfig(
+            datatables_class=datatables_class,
+            datatables_options=datatables_options,
+            datatables_version=datatables_version,
+        )
     )
     assert result.strip() == expected_output
 
@@ -170,6 +188,7 @@ def test_custom_js_css(
 
     app = SphinxTestApp("html", SphinxTestPath(basic_site), SphinxTestPath(build))
     app.build()
+    assert app.statuscode == 0
 
     index_html = (build / "html/index.html").read_text(encoding="utf-8")
 
@@ -181,39 +200,3 @@ def test_custom_js_css(
 
     if add_js and add_css:
         assert "cdn.datatables.net" not in index_html
-
-
-@pytest.fixture
-def basic_site(tmp_path: Path) -> Path:
-    """Provide a basic site folder with a single page with a table and config."""
-    src = tmp_path / "src"
-    src.mkdir()
-
-    _static = src / "_static"
-    _static.mkdir()
-
-    conf_py = src / "conf.py"
-    conf_py.write_text(
-        textwrap.dedent("""
-            extensions = ["sphinxcontrib.jquery", "sphinx_datatables"]
-            html_static_path = ["_static"]""").strip(),
-        encoding="utf-8",
-    )
-
-    index_rst = src / "index.rst"
-    index_rst.write_text(
-        textwrap.dedent("""
-            test
-            ====
-
-            .. table:: Title
-                :class: sphinx-datatable
-
-                =================== =================== ===================
-                Heading 1, column 1 Heading 2, column 2 Heading 3, column 3
-                =================== =================== ===================
-                Row 1, column 1     Row 1, column 2     Row 1, column 3
-                =================== =================== ===================""").strip(),
-        encoding="utf-8",
-    )
-    return src

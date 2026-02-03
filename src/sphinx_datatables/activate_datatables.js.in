@@ -1,9 +1,29 @@
+{%- if emit_script_tag %}
+<script class="sphinx-datatables-config">
+{% endif -%}
 // Copyright (c) 2023 Varun Sharma
 //
 // SPDX-License-Identifier: MIT
 
 $(document).ready( function () {
-    $('table.${datatables_class}').DataTable(
-${datatables_options}
+{%- if emit_defaults %}
+    $.extend( $.fn.dataTable.defaults,
+        {{ datatables_options | indent(8) }}
+    );
+{%- if datatables_class %}
+
+    $(`table.{{ datatables_class }}`).filter(':not(.dataTable)').DataTable(
+        {},
+    );
+{%- endif %}
+} );
+{%- else -%}
+
+    $(`{{ datatables_class }}`).filter(':not(.dataTable)').DataTable(
+        {{ datatables_options | indent(8) }}
     );
 } );
+{%- endif -%}
+{%- if emit_script_tag %}
+</script>
+{% endif -%}

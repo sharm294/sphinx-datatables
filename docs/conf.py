@@ -52,3 +52,14 @@ exclude_patterns = [
 # -- Options for HTML output -------------------------------------------------
 
 html_last_updated_fmt = "%B %d, %Y"
+
+html_theme_options = {
+    "github_repo": "sphinx-datatables",
+    "github_user": "sharm294",
+    "sidebar_collapse": False,
+    "description": "Searchable and sortable tables in Sphinx documentation",
+    "fixed_sidebar": True,
+    "github_banner": True,
+    "github_button": True,
+    "github_type": "fork",
+}

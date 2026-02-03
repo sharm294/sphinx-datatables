@@ -3,3 +3,4 @@
 # SPDX-License-Identifier: MIT
 
 include src/sphinx_datatables/*.js.in
+recursive-include test *.py
